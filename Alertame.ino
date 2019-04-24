@@ -109,6 +109,7 @@ void Bot_handleNewMessages(int numNewMessages) {
 }
 
 void Bot_setup() {
+  client.setInsecure();
   Bot_nexttime = millis() - 1;
 }
 
