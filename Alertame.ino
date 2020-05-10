@@ -132,11 +132,12 @@ void cmd_hola(String chat_id, String from_name) {
   String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm "+ my_name +"\n";
   bot.sendMessage(chat_id, welcome);
   default_chat_id = chat_id;
+  cmd_status();
 }
 
 void cmd_status(String chat_id, String from_name) {
   String st  = input_read()?"Ok":"ALARMA!";
-  String pol = polarity_inverted?"normal":"inverted";
+  String pol = polarity_inverted?"inverted":"normal";
   String msg = my_name + " status: " + st + " polarity: " + pol + "\n";
   
   if (chat_id == "") chat_id = default_chat_id;
