@@ -26,6 +26,7 @@ bool WiFi_ok = false;
 String my_name = "Caldera #1";
 
 bool input_read();
+bool polarity_inverted = false;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
 int digitalInputPin = 5;  // GPIO5 - Relay module optocoupled input
@@ -107,6 +108,11 @@ void blink_loop() {
   Serial.println(value);
 }
 
+void cmd_polarity(String chat_id, String from_name) {
+  polarity_inverted = !polarity_inverted;
+  cmd_status(chat_id, from_name);
+}
+
 // Telegram Bot
 
 #define BOTtoken "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
@@ -128,8 +134,9 @@ void cmd_hola(String chat_id, String from_name) {
 }
 
 void cmd_status(String chat_id, String from_name) {
-  String st = input_read()?"Ok":"ALARMA!";
-  String msg = my_name + " status: " + st + "\n";
+  String st  = input_read()?"Ok":"ALARMA!";
+  String pol = polarity_inverted?"normal":"inverted";
+  String msg = my_name + " status: " + st + " polarity: " + pol + "\n";
   
   if (chat_id == "") chat_id = default_chat_id;
   Serial.print(msg);
@@ -155,6 +162,7 @@ void Bot_handleNewMessages(int numNewMessages) {
 //    if (cmd == "blink") cmd_blink();
 //    if (cmd == "unblink") cmd_unblink();
     if (cmd == "status") cmd_status(chat_id, from_name);
+    if (cmd == "polarity") cmd_polarity(chat_id, from_name);
     if (!firstMsg && cmd == "reset") ESP.reset();
     firstMsg = false;
   }
@@ -191,7 +199,6 @@ void Bot_loop() {
 ///////////////////////
 
 bool input_status = false;
-bool polarity_inverted = false;
 
 void input_setup() {
   pinMode(digitalInputPin, INPUT_PULLUP);
