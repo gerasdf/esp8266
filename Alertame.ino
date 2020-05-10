@@ -203,7 +203,6 @@ bool input_read() {
 
 void input_loop() {
   bool new_status = input_read();
-
   
   if (input_status != new_status) {
   // Serial.print(String(new_status)+"\r");
