@@ -143,6 +143,12 @@ void cmd_status(String chat_id, String from_name) {
   bot.sendMessage(chat_id, msg);
 }
 
+void cmd_relay_on() {
+}
+
+void cmd_relay_off() {
+}
+
 void Bot_handleNewMessages(int numNewMessages) {
   static bool firstMsg = true;
   for (int i = 0; i < numNewMessages; i++) {
@@ -163,6 +169,10 @@ void Bot_handleNewMessages(int numNewMessages) {
 //    if (cmd == "unblink") cmd_unblink();
     if (cmd == "status") cmd_status(chat_id, from_name);
     if (cmd == "polarity") cmd_polarity(chat_id, from_name);
+
+    if (cmd == "ron") cmd_relay_on();
+    if (cmd == "roff") cmd_relay_off();
+    
     if (!firstMsg && cmd == "reset") ESP.reset();
     firstMsg = false;
   }
