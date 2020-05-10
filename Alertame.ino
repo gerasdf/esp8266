@@ -25,8 +25,8 @@ bool WiFi_ok = false;
 
 String my_name = "Caldera #1";
 
-bool input_read();
 bool polarity_inverted = false;
+bool input_status = false;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
 int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
@@ -149,7 +149,7 @@ void cmd_help(String chat_id, String from_name) {
 }
 
 void cmd_status(String chat_id, String from_name) {
-  String st  = input_read()?"Ok":"ALARMA!";
+  String st  = input_status?"Ok":"ALARMA!";
   String pol = polarity_inverted?"inverted":"normal";
   String msg = my_name + " status: " + st + " polarity: " + pol + "\n";
   
@@ -222,26 +222,23 @@ void Bot_loop() {
 
 ///////////////////////
 
-bool input_status = false;
+bool input_read() {
+  return digitalRead(digitalInputPin) ^ polarity_inverted;
+}
 
 void input_setup() {
   pinMode(digitalInputPin, INPUT_PULLUP);
   input_status = input_read();
 }
 
-bool input_read() {
-  return digitalRead(digitalInputPin) ^ polarity_inverted;
-}
-
 void input_loop() {
   bool new_status = input_read();
   
   if (input_status != new_status) {
-  // Serial.print(String(new_status)+"\r");
+      input_status = new_status;
 #ifdef BOT_AND_WIFI
       cmd_status("","");
 #endif
-      input_status = new_status;
   }
 }
 
