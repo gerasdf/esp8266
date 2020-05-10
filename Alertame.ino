@@ -172,7 +172,7 @@ void Bot_handleNewMessages(int numNewMessages) {
 
     if (cmd == "ron") cmd_relay_on();
     if (cmd == "roff") cmd_relay_off();
-    
+
     if (!firstMsg && cmd == "reset") ESP.reset();
     firstMsg = false;
   }
