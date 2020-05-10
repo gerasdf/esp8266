@@ -132,7 +132,7 @@ void cmd_hola(String chat_id, String from_name) {
   String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm "+ my_name +"\n";
   bot.sendMessage(chat_id, welcome);
   default_chat_id = chat_id;
-  cmd_status();
+  cmd_status(chat_id, from_name);
 }
 
 void cmd_status(String chat_id, String from_name) {
