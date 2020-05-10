@@ -26,11 +26,14 @@ bool WiFi_ok = false;
 String my_name = "Caldera #1";
 
 bool polarity_inverted = false;
-bool input_status = false;
+bool input_status;
+int relay_state;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
 int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
 int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
+
+void relay_set(int value);
 
 WiFiClientSecure client;
 
@@ -149,19 +152,25 @@ void cmd_help(String chat_id, String from_name) {
 }
 
 void cmd_status(String chat_id, String from_name) {
-  String st  = input_status?"Ok":"ALARMA!";
+  String in_st  = input_status?"Ok":"ALARMA!";
+  String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"inverted":"normal";
-  String msg = my_name + " status: " + st + " polarity: " + pol + "\n";
+  
+  String msg = my_name + " status: " + in_st + " relay: " + rel_st + " polarity: " + pol + "\n";
   
   if (chat_id == "") chat_id = default_chat_id;
   Serial.print(msg);
   bot.sendMessage(chat_id, msg);
 }
 
-void cmd_relay_on() {
+void cmd_relay_on(String chat_id, String from_name) {
+   relay_set(1);
+   cmd_status(chat_id, from_name);
 }
 
-void cmd_relay_off() {
+void cmd_relay_off(String chat_id, String from_name) {
+   relay_set(0);
+   cmd_status(chat_id, from_name);
 }
 
 void Bot_handleNewMessages(int numNewMessages) {
@@ -182,8 +191,8 @@ void Bot_handleNewMessages(int numNewMessages) {
     else if (cmd == "status") cmd_status(chat_id, from_name);
     else if (cmd == "polarity") cmd_polarity(chat_id, from_name);
 
-    else if (cmd == "ron") cmd_relay_on();
-    else if (cmd == "roff") cmd_relay_off();
+    else if (cmd == "ron") cmd_relay_on(chat_id, from_name);
+    else if (cmd == "roff") cmd_relay_off(chat_id, from_name);
 
     else if (!firstMsg && cmd == "reset") ESP.reset();
     else cmd_help(chat_id, from_name);
@@ -286,6 +295,18 @@ void OTA_loop() {
   ArduinoOTA.handle();
 }
 
+/////////// Relay
+
+void relay_setup() {
+   pinMode(digitalOutputPin, OUTPUT);
+   relay_set(0);
+}
+
+void relay_set(int value) {
+   relay_state = value;
+   digitalWrite(digitalOutputPin, value);
+}
+
 ///////////////////////
 
 void setup() {
@@ -296,6 +317,7 @@ void setup() {
   Bot_setup();
 #endif
   input_setup();
+  relay_setup();
 }
 
 void loop() {
