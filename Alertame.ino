@@ -194,15 +194,15 @@ bool input_status = false;
 
 void input_setup() {
   pinMode(digitalInputPin, INPUT_PULLUP);
-  input_status = digitalRead(digitalInputPin);
+  input_status = input_read();
 }
 
 bool input_read() {
-  return (digitalRead(digitalInputPin));
+  return digitalRead(digitalInputPin);
 }
 
 void input_loop() {
-  bool new_status = digitalRead(digitalInputPin);
+  bool new_status = input_read();
 
   
   if (input_status != new_status) {
