@@ -132,7 +132,20 @@ void cmd_hola(String chat_id, String from_name) {
   String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm "+ my_name +"\n";
   bot.sendMessage(chat_id, welcome);
   default_chat_id = chat_id;
+  cmd_help(chat_id, from_name);
   cmd_status(chat_id, from_name);
+}
+
+void cmd_help(String chat_id, String from_name) {
+  String help =
+    "`status` shows all status\n"
+    "`polarity` changes input polarity\n"
+    "`hola` registers who will receive alerts\n"
+    "`ron` turns on Relay\n"
+    "`roff` turns off Relay\n"
+    "`reset` resets the system\n";
+  if (chat_id == "") chat_id = default_chat_id;
+  bot.sendMessage(chat_id, help, "Markdown");    
 }
 
 void cmd_status(String chat_id, String from_name) {
@@ -163,19 +176,18 @@ void Bot_handleNewMessages(int numNewMessages) {
 
     Serial.print("Received \"" + cmd + "\" from " + from_name + "\n");
 
-    if (cmd == "hola") {
-      cmd_hola(chat_id, from_name);
-      cmd_status(chat_id, from_name);
-    }
-//    if (cmd == "blink") cmd_blink();
-//    if (cmd == "unblink") cmd_unblink();
-    if (cmd == "status") cmd_status(chat_id, from_name);
-    if (cmd == "polarity") cmd_polarity(chat_id, from_name);
+    if (cmd == "hola") cmd_hola(chat_id, from_name);
+//    else if (cmd == "blink") cmd_blink();
+//    else if (cmd == "unblink") cmd_unblink();
+    else if (cmd == "status") cmd_status(chat_id, from_name);
+    else if (cmd == "polarity") cmd_polarity(chat_id, from_name);
 
-    if (cmd == "ron") cmd_relay_on();
-    if (cmd == "roff") cmd_relay_off();
+    else if (cmd == "ron") cmd_relay_on();
+    else if (cmd == "roff") cmd_relay_off();
 
-    if (!firstMsg && cmd == "reset") ESP.reset();
+    else if (!firstMsg && cmd == "reset") ESP.reset();
+    else cmd_help(chat_id, from_name);
+    
     firstMsg = false;
   }
 }
