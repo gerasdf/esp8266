@@ -34,6 +34,7 @@ WiFiClientSecure client;
 
 void WiFi_setup() {
 #ifdef AUTOCONNECT
+  portal.config("ViveroHirose","viverohirose");
   if (portal.begin()) {
     Serial.println("connected:" + WiFi.SSID());
     Serial.println("IP:" + WiFi.localIP().toString());
