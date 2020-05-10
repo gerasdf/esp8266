@@ -214,11 +214,11 @@ bool input_status = false;
 
 void input_setup() {
   pinMode(digitalInputPin, INPUT_PULLUP);
-  input_status = input_read() ^ polarity_inverted;
+  input_status = input_read();
 }
 
 bool input_read() {
-  return digitalRead(digitalInputPin);
+  return digitalRead(digitalInputPin) ^ polarity_inverted;
 }
 
 void input_loop() {
