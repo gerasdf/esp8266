@@ -191,10 +191,11 @@ void Bot_loop() {
 ///////////////////////
 
 bool input_status = false;
+bool polarity_inverted = false;
 
 void input_setup() {
   pinMode(digitalInputPin, INPUT_PULLUP);
-  input_status = input_read();
+  input_status = input_read() ^ polarity_inverted;
 }
 
 bool input_read() {
