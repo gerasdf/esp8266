@@ -28,7 +28,7 @@ String my_name = "Caldera #1";
 bool input_read();
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
-int digitalInputPin = 5;  // GPIO5 - Relay
+int digitalInputPin = 5;  // GPIO5 - Relay module optocoupled input
 
 WiFiClientSecure client;
 
@@ -128,7 +128,7 @@ void cmd_hola(String chat_id, String from_name) {
 }
 
 void cmd_status(String chat_id, String from_name) {
-  String st = input_read()?"Ok!":"ALARMA!";
+  String st = input_read()?"Ok":"ALARMA!";
   String msg = my_name + " status: " + st + "\n";
   
   if (chat_id == "") chat_id = default_chat_id;
