@@ -29,7 +29,8 @@ bool input_read();
 bool polarity_inverted = false;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
-int digitalInputPin = 5;  // GPIO5 - Relay module optocoupled input
+int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
+int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
 
 WiFiClientSecure client;
 
