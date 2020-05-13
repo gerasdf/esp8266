@@ -10,37 +10,46 @@
 #include <UniversalTelegramBot.h>
 #include <ArduinoOTA.h>
 #include <WiFiClientSecure.h>
-
 #ifdef AUTOCONNECT
 #include <AutoConnect.h>
 AutoConnect portal;
-#else
-// All WiFi
+#endif
 
-//char WiFi_ssid[] = "Your ESSID";
-//char WiFi_key[] = "Your Password";
-#endif // AUTOCONNECT
+// All Configuration options
 
-bool WiFi_ok = false;
-
-String my_name = "Caldera #1";
+#define MY_NAME     "Caldera_1"
 
 bool polarity_inverted = false;
-bool input_status;
-int relay_state;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
 int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
 int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
 
+#define TelegramBotToken "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
+
+String default_chat_id = "25235518"; // gera
+// String default_chat_id = "268186747"; // Agu
+
+#ifndef AUTOCONNECT
+char WiFi_ssid[] = "Your Fixed ESSID";
+char WiFi_key[] = "Your Password";
+#endif // AUTOCONNECT
+
+//////////////////
+
 void relay_set(int value);
 void cmd_status(String chat_id, String from_name);
+
+bool WiFi_ok = false;
+
+bool input_status;
+int relay_state;
 
 WiFiClientSecure client;
 
 void WiFi_setup() {
 #ifdef AUTOCONNECT
-  portal.config("ViveroHirose","viverohirose");
+  portal.config(MY_NAME, MY_NAME "Password2020!");
   if (portal.begin()) {
     Serial.println("connected:" + WiFi.SSID());
     Serial.println("IP:" + WiFi.localIP().toString());
@@ -98,7 +107,7 @@ void cmd_unblink() {
 
 void blink_setup() {
   cmd_unblink();
-  Serial.println("\nI'm " + my_name + "\n");
+  Serial.println("\nI'm " MY_NAME "\n");
 }
 
 void blink_loop() {
@@ -120,12 +129,7 @@ void cmd_polarity(String chat_id, String from_name) {
 
 // Telegram Bot
 
-#define BOTtoken "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
-
-UniversalTelegramBot bot(BOTtoken, client);
-
-// String default_chat_id = "25235518"; // gera
-String default_chat_id = "268186747"; // Agu
+UniversalTelegramBot bot(TelegramBotToken, client);
 
 int Bot_mtbs_ms = 5000;
 long Bot_nexttime = 0;
@@ -133,7 +137,7 @@ bool Bot_greeted = false;
 
 // Greeter
 void cmd_hola(String chat_id, String from_name) {
-  String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm "+ my_name +"\n";
+  String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm " MY_NAME "\n";
   bot.sendMessage(chat_id, welcome);
   default_chat_id = chat_id;
   cmd_help(chat_id, from_name);
@@ -157,7 +161,7 @@ void cmd_status(String chat_id, String from_name) {
   String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"inverted":"normal";
   
-  String msg = my_name + " status: " + in_st + " relay: " + rel_st + " polarity: " + pol + "\n";
+  String msg = MY_NAME " status: " + in_st + " relay: " + rel_st + " polarity: " + pol + "\n";
   
   if (chat_id == "") chat_id = default_chat_id;
   Serial.print(msg);
