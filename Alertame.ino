@@ -34,6 +34,7 @@ int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
 int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
 
 void relay_set(int value);
+void cmd_status(String chat_id, String from_name);
 
 WiFiClientSecure client;
 
@@ -123,8 +124,8 @@ void cmd_polarity(String chat_id, String from_name) {
 
 UniversalTelegramBot bot(BOTtoken, client);
 
-String default_chat_id = "25235518"; // gera
-// String default_chat_id = "268186747"; // Agu
+// String default_chat_id = "25235518"; // gera
+String default_chat_id = "268186747"; // Agu
 
 int Bot_mtbs_ms = 5000;
 long Bot_nexttime = 0;
