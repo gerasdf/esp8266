@@ -17,7 +17,7 @@ AutoConnect portal;
 
 // All Configuration options
 
-#define MY_NAME     "Caldera_0"
+#define MY_NAME     "Caldera0"
 
 bool polarity_inverted = false;
 
@@ -138,15 +138,16 @@ bool Bot_greeted = false;
 // General
 
 void send_message(String chat_id, String text) {
-  bot.sendMessage(chat_id, text, "Markdown");    
+  if (chat_id == "") chat_id = default_chat_id;
+  bot.sendMessage(chat_id, String("`"MY_NAME "`: ") + text, "Markdown");
 }
 
 // Greeter
 void cmd_start(String chat_id, String from_name) {
-  String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm " MY_NAME "\n";
-  
-  bot.sendMessage(chat_id, welcome);
+  String welcome = "Hola, " + from_name + ". your `chat_id` is " + chat_id;
+
   default_chat_id = chat_id;
+  send_message("", welcome);
   cmd_help(chat_id, from_name);
   cmd_status(chat_id, from_name);
 
@@ -154,21 +155,21 @@ void cmd_start(String chat_id, String from_name) {
   DynamicJsonDocument doc(200);
   deserializeJson(doc, "}{\"ok\":true, \"nok\":false}");
 
-  bot.sendMessage(chat_id, String("ok: ")    + (bool)doc["ok"] +           " nok: "  + (bool)doc["mok"] +
+  send_message(chat_id, String("ok: ")    + (bool)doc["ok"] +           " nok: "  + (bool)doc["mok"] +
                  " mokt: " + (bool)(doc["mok"] | true) + " mokf: " + (bool)(doc["mok"] | false)); 
   */
 }
 
 void cmd_help(String chat_id, String from_name) {
-  String help =
+  String help = "\n"
     "`status` shows all status\n"
     "`polarity` changes input polarity\n"
     "`start` registers who will receive alerts\n"
     "`ron` turns on Relay\n"
     "`roff` turns off Relay\n"
     "`reset` resets the system\n";
-  if (chat_id == "") chat_id = default_chat_id;
-  bot.sendMessage(chat_id, help, "Markdown");    
+
+  send_message(chat_id, help);
 }
 
 void cmd_status(String chat_id, String from_name) {
@@ -176,11 +177,9 @@ void cmd_status(String chat_id, String from_name) {
   String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"inverted":"normal";
   
-  String msg = MY_NAME " status: " + in_st + " relay: " + rel_st + " polarity: " + pol + " last: " + bot.last_sent_message_id + "\n";
+  String msg = "status: " + in_st + " relay: " + rel_st + " polarity: " + pol + " last: " + bot.last_sent_message_id + "\n";
   
-  if (chat_id == "") chat_id = default_chat_id;
-  Serial.print(msg);
-  bot.sendMessage(chat_id, msg);
+  send_message(chat_id, msg);
 }
 
 void cmd_relay_on(String chat_id, String from_name) {
