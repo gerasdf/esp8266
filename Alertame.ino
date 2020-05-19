@@ -201,6 +201,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     String from_name = bot.messages[i].from_name;
 
     cmd.toLowerCase();
+    if (cmd[0] == '/') cmd.remove(0,1);
     if (from_name == "") from_name = "GUEST";
 
     Serial.print("Received \"" + cmd + "\" from " + from_name + "\n");
@@ -227,9 +228,17 @@ void Bot_setup() {
 }
 
 void Bot_first_time() {
-    if (default_chat_id != "") {
-      cmd_hola(default_chat_id, "?");
-    }
+  String commands = "["
+    "{\"command\":\"help\", \"description\":\"Get bot usage help\"},"
+    "{\"command\":\"reset\",\"description\":\"reset device\"},"
+//    "{\"command\":\"start\",\"description\":\"register with (all) devices as their user\"},"
+  "]";
+
+  default_chat_id, bot.setMyCommands(commands);
+  
+  if (default_chat_id != "") {
+    cmd_hola(default_chat_id, "?");
+  }
 }
 
 void Bot_loop() {
