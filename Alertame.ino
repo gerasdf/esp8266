@@ -215,7 +215,9 @@ void Bot_handleNewMessages(int numNewMessages) {
     else if (cmd == "ron") cmd_relay_on(chat_id, from_name);
     else if (cmd == "roff") cmd_relay_off(chat_id, from_name);
 
-    else if (!firstMsg && cmd == "reset") ESP.reset();
+    else if (cmd == "reset") {
+      if (!firstMsg) ESP.reset();
+    }
     else cmd_help(chat_id, from_name);
     
     firstMsg = false;
