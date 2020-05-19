@@ -234,7 +234,10 @@ void Bot_first_time() {
     "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
     "{\"command\":\"reset\", \"description\":\"reset device\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
-    "{\"command\":\"status\",\"description\":\"answer device current status\"}"
+    "{\"command\":\"status\",\"description\":\"answer device current status\"},"
+    "{\"command\":\"polarity\",\"description\":\"changes input polarity\"},"
+    "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
+    "{\"command\":\"roff\",\"description\":\"turn relay off\"}"
   "]";
 
   bot.setMyCommands(commands);
