@@ -260,7 +260,7 @@ void input_loop() {
 
 void OTA_setup() {
   ArduinoOTA.setPort(8266);
-  ArduinoOTA.setHostname("caldera1");
+  ArduinoOTA.setHostname(MY_NAME);
   ArduinoOTA.setPasswordHash("fff9a16a632c7daa86f7a4a8ce1929d6");
   ArduinoOTA.onStart([]() {
     String type;
