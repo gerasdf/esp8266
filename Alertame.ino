@@ -135,13 +135,28 @@ int Bot_mtbs_ms = 5000;
 long Bot_nexttime = 0;
 bool Bot_greeted = false;
 
+// General
+
+void send_message(String chat_id, String text) {
+  bot.sendMessage(chat_id, text, "Markdown");    
+}
+
 // Greeter
 void cmd_hola(String chat_id, String from_name) {
   String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm " MY_NAME "\n";
+  
   bot.sendMessage(chat_id, welcome);
   default_chat_id = chat_id;
   cmd_help(chat_id, from_name);
   cmd_status(chat_id, from_name);
+
+  /*
+  DynamicJsonDocument doc(200);
+  deserializeJson(doc, "}{\"ok\":true, \"nok\":false}");
+
+  bot.sendMessage(chat_id, String("ok: ")    + (bool)doc["ok"] +           " nok: "  + (bool)doc["mok"] +
+                 " mokt: " + (bool)(doc["mok"] | true) + " mokf: " + (bool)(doc["mok"] | false)); 
+  */
 }
 
 void cmd_help(String chat_id, String from_name) {
@@ -211,13 +226,17 @@ void Bot_setup() {
   Bot_nexttime = millis() - 1;
 }
 
+void Bot_first_time() {
+    if (default_chat_id != "") {
+      cmd_hola(default_chat_id, "?");
+    }
+}
+
 void Bot_loop() {
   if (!WiFi_ok) return;
   if (!Bot_greeted) {
     Bot_greeted = true;
-    if (default_chat_id != "") {
-      cmd_hola(default_chat_id, "?");
-    }
+    Bot_first_time();
   }
   if (millis() > Bot_nexttime)  {
     Serial.print("/");
