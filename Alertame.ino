@@ -17,7 +17,7 @@ AutoConnect portal;
 
 // All Configuration options
 
-#define MY_NAME     "Caldera_1"
+#define MY_NAME     "Caldera_0"
 
 bool polarity_inverted = false;
 
@@ -161,7 +161,7 @@ void cmd_status(String chat_id, String from_name) {
   String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"inverted":"normal";
   
-  String msg = MY_NAME " status: " + in_st + " relay: " + rel_st + " polarity: " + pol + "\n";
+  String msg = MY_NAME " status: " + in_st + " relay: " + rel_st + " polarity: " + pol + " last: " + bot.last_sent_message_id + "\n";
   
   if (chat_id == "") chat_id = default_chat_id;
   Serial.print(msg);
