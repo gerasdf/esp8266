@@ -142,7 +142,7 @@ void send_message(String chat_id, String text) {
 }
 
 // Greeter
-void cmd_hola(String chat_id, String from_name) {
+void cmd_start(String chat_id, String from_name) {
   String welcome = "Hola, " + from_name + ". chat_id=" + chat_id + ". I'm " MY_NAME "\n";
   
   bot.sendMessage(chat_id, welcome);
@@ -163,7 +163,7 @@ void cmd_help(String chat_id, String from_name) {
   String help =
     "`status` shows all status\n"
     "`polarity` changes input polarity\n"
-    "`hola` registers who will receive alerts\n"
+    "`start` registers who will receive alerts\n"
     "`ron` turns on Relay\n"
     "`roff` turns off Relay\n"
     "`reset` resets the system\n";
@@ -206,7 +206,7 @@ void Bot_handleNewMessages(int numNewMessages) {
 
     Serial.print("Received \"" + cmd + "\" from " + from_name + "\n");
 
-    if (cmd == "hola") cmd_hola(chat_id, from_name);
+    if (cmd == "start") cmd_start(chat_id, from_name);
 //    else if (cmd == "blink") cmd_blink();
 //    else if (cmd == "unblink") cmd_unblink();
     else if (cmd == "status") cmd_status(chat_id, from_name);
@@ -231,15 +231,16 @@ void Bot_setup() {
 
 void Bot_first_time() {
   String commands = "["
-    "{\"command\":\"help\", \"description\":\"Get bot usage help\"},"
-    "{\"command\":\"reset\",\"description\":\"reset device\"},"
-//    "{\"command\":\"start\",\"description\":\"register with (all) devices as their user\"},"
+    "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
+    "{\"command\":\"reset\", \"description\":\"reset device\"},"
+    "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
+    "{\"command\":\"status\",\"description\":\"answer device current status\"}"
   "]";
 
-  default_chat_id, bot.setMyCommands(commands);
+  bot.setMyCommands(commands);
   
   if (default_chat_id != "") {
-    cmd_hola(default_chat_id, "?");
+    cmd_start(default_chat_id, "");
   }
 }
 
