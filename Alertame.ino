@@ -148,7 +148,6 @@ void cmd_start(String chat_id, String from_name) {
 
   default_chat_id = chat_id;
   send_message("", welcome);
-  cmd_help(chat_id, from_name);
   cmd_status(chat_id, from_name);
 
   /*
