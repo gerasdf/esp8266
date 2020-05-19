@@ -131,7 +131,7 @@ void cmd_polarity(String chat_id, String from_name) {
 
 UniversalTelegramBot bot(TelegramBotToken, client);
 
-int Bot_mtbs_ms = 5000;
+int Bot_mtbs_ms = 3000;
 long Bot_nexttime = 0;
 bool Bot_greeted = false;
 
@@ -227,6 +227,7 @@ void Bot_handleNewMessages(int numNewMessages) {
 void Bot_setup() {
   client.setInsecure();
   Bot_nexttime = millis() - 1;
+  bot.longPoll = 1;
 }
 
 void Bot_first_time() {
