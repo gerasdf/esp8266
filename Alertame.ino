@@ -107,7 +107,7 @@ void cmd_unblink() {
 
 void blink_setup() {
   cmd_unblink();
-  Serial.println("\nI'm " MY_NAME "\n");
+  Serial.println("I'm " MY_NAME);
 }
 
 void blink_loop() {
@@ -209,7 +209,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     if (cmd[0] == '/') cmd.remove(0,1);
     if (from_name == "") from_name = "GUEST";
 
-    Serial.print("\nReceived \"" + cmd + "\" from " + from_name + "\n");
+    Serial.println("\nReceived \"" + cmd + "\" from " + from_name);
 
     if (cmd == "start") cmd_start(chat_id, from_name);
 //    else if (cmd == "blink") cmd_blink();
