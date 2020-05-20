@@ -122,7 +122,7 @@ void blink_loop() {
   Serial.println(value);
 }
 
-void cmd_polarity(String &chat_id, String &from_name) {
+void cmd_polarity(String &chat_id) {
   polarity_inverted = !polarity_inverted;
   cmd_status(chat_id);
 }
@@ -174,7 +174,7 @@ void cmd_start(String &chat_id, String &from_name) {
   */
 }
 
-void cmd_help(String &chat_id, String &from_name) {
+void cmd_help(String &chat_id) {
   String help = F("\n"
     "`status` shows all status\n"
     "`polarity` changes input polarity\n"
@@ -206,7 +206,7 @@ void cmd_status(String &chat_id) {
   send_message(chat_id, msg);
 }
 
-void cmd_relay_set(String &chat_id, String &from_name, int first_state, int second_state) {
+void cmd_relay_set(String &chat_id, int first_state, int second_state) {
    relay_set(first_state);
    if (second_state != -1) {
      delay(1000);
@@ -234,17 +234,17 @@ void Bot_handleNewMessages(int numNewMessages) {
 //    else if (cmd == "blink") cmd_blink();
 //    else if (cmd == "unblink") cmd_unblink();
     else if (cmd == "status") cmd_status(chat_id);
-    else if (cmd == "polarity") cmd_polarity(chat_id, from_name);
+    else if (cmd == "polarity") cmd_polarity(chat_id);
 
-    else if (cmd == "ron") cmd_relay_set(chat_id, from_name, 1, -1);
-    else if (cmd == "roff") cmd_relay_set(chat_id, from_name, 0, -1);
-    else if (cmd == "ronoff") cmd_relay_set(chat_id, from_name, 1, 0);
-    else if (cmd == "roffon") cmd_relay_set(chat_id, from_name, 0, 1);
+    else if (cmd == "ron") cmd_relay_set(chat_id, 1, -1);
+    else if (cmd == "roff") cmd_relay_set(chat_id, 0, -1);
+    else if (cmd == "ronoff") cmd_relay_set(chat_id, 1, 0);
+    else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
 
     else if (cmd == "reset") {
       if (!firstMsg) ESP.reset();
     }
-    else cmd_help(chat_id, from_name);
+    else cmd_help(chat_id);
     
     firstMsg = false;
   }
