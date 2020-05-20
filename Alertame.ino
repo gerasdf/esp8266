@@ -175,7 +175,7 @@ void cmd_start(String chat_id, String from_name) {
 }
 
 void cmd_help(String chat_id, String from_name) {
-  String help = "\n"
+  String help = F("\n"
     "`status` shows all status\n"
     "`polarity` changes input polarity\n"
     "`start` registers who will receive alerts\n"
@@ -183,7 +183,7 @@ void cmd_help(String chat_id, String from_name) {
     "`roff` turns off Relay\n"
     "`ronoff` turns on Relay then off\n"
     "`roffon` turns off Relay then on\n"
-    "`reset` resets the system\n";
+    "`reset` resets the system\n");
 
   send_message(chat_id, help);
 }
@@ -191,15 +191,17 @@ void cmd_help(String chat_id, String from_name) {
 void cmd_status(String chat_id, String from_name) {
   String in_st  = input_status?"Ok":"ALARMA!";
   String rel_st = relay_state?"On":"Off";
-  String pol = polarity_inverted?"inverted":"normal";
+  String pol = polarity_inverted?"-":"+";
   
-  String msg = 
-    "status: *" + in_st + 
-    "* relay: *" + rel_st +
-    "* polarity: *" + pol +
-    "* uptime: *" + millis()/1000 +
-    "* last: " + bot.last_sent_message_id +
-    "\n";
+  String msg = F("status: *");
+  msg += in_st;
+  msg += F("* relay: *");
+  msg += rel_st;
+  msg += F("* polarity: *");
+  msg += pol;
+  msg += F("* uptime: *");
+  msg += millis()/1000;
+  msg += F("*");
   
   send_message(chat_id, msg);
 }
@@ -255,7 +257,7 @@ void Bot_setup() {
 }
 
 void Bot_first_time() {
-  String commands = "["
+  String commands = F("["
     "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
     "{\"command\":\"reset\", \"description\":\"reset device\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
@@ -265,7 +267,7 @@ void Bot_first_time() {
     "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"}"
-  "]";
+  "]");
 
   bot.setMyCommands(commands);
   
