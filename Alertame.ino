@@ -138,12 +138,18 @@ bool Bot_greeted = false;
 // General
 
 void send_message(String chat_id, String text) {
+  String msg = F("*" MY_NAME "*: ");
+  
   if (chat_id == "") chat_id = default_chat_id;
-  bot.sendMessage(chat_id, String("*"MY_NAME "*: ") + text, "Markdown");
+  
+  msg += text;
+  Serial.println(msg);
+  bot.sendMessage(chat_id, msg, "Markdown");
 }
 
 bool is_for_me(int message_index) {
-  // Serial.println(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
+  Serial.println(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
+  
   // Only accept answers to other messages
   if (0 == bot.messages[message_index].reply_to_message_id) return false;
 
