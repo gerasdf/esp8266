@@ -218,8 +218,6 @@ void cmd_relay_set(String &chat_id, int first_state, int second_state) {
 void Bot_handleNewMessages(int numNewMessages) {
   static bool firstMsg = true;
   for (int i = 0; i < numNewMessages; i++) {
-    if (!is_for_me(i)) continue;
-    
     String chat_id = String(bot.messages[i].chat_id);
     String cmd = bot.messages[i].text;
 
@@ -228,21 +226,25 @@ void Bot_handleNewMessages(int numNewMessages) {
 
     Serial.println("\nReceived \"" + cmd + "\" from " + chat_id);
 
+    // Global messages (acceptable for all devices at the same time, without any filtering)
     if (cmd == "start") cmd_start(chat_id);
+    
+    // Device commands (only acceptable if directed to a particular device)
+    else if (is_for_me(i)) {
+      if (cmd == "status") cmd_status(chat_id);
+      else if (cmd == "polarity") cmd_polarity(chat_id);
+      else if (cmd == "ron") cmd_relay_set(chat_id, 1, -1);
+      else if (cmd == "roff") cmd_relay_set(chat_id, 0, -1);
+      else if (cmd == "ronoff") cmd_relay_set(chat_id, 1, 0);
+      else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
 //    else if (cmd == "blink") cmd_blink();
 //    else if (cmd == "unblink") cmd_unblink();
-    else if (cmd == "status") cmd_status(chat_id);
-    else if (cmd == "polarity") cmd_polarity(chat_id);
-
-    else if (cmd == "ron") cmd_relay_set(chat_id, 1, -1);
-    else if (cmd == "roff") cmd_relay_set(chat_id, 0, -1);
-    else if (cmd == "ronoff") cmd_relay_set(chat_id, 1, 0);
-    else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
-
-    else if (cmd == "reset") {
-      if (!firstMsg) ESP.reset();
+  
+      else if (cmd == "reset") {
+        if (!firstMsg) ESP.reset();
+      }
+      else cmd_help(chat_id);
     }
-    else cmd_help(chat_id);
     
     firstMsg = false;
   }
