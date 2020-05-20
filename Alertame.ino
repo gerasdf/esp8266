@@ -228,6 +228,7 @@ void Bot_handleNewMessages(int numNewMessages) {
 
     // Global messages (acceptable for all devices at the same time, without any filtering)
     if (cmd == "start") cmd_start(chat_id);
+    else if (cmd == "allstatus") cmd_status(chat_id);
     
     // Device commands (only acceptable if directed to a particular device)
     else if (is_for_me(i)) {
@@ -261,6 +262,7 @@ void Bot_first_time() {
     "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
     "{\"command\":\"reset\", \"description\":\"reset device\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
+    "{\"command\":\"allstatus\",\"description\":\"answer all devices current status\"},"
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
     "{\"command\":\"polarity\",\"description\":\"changes input polarity\"},"
     "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
