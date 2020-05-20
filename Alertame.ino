@@ -166,6 +166,8 @@ void cmd_help(String chat_id, String from_name) {
     "`start` registers who will receive alerts\n"
     "`ron` turns on Relay\n"
     "`roff` turns off Relay\n"
+    "`ronoff` turns on Relay then off\n"
+    "`roffon` turns off Relay then on\n"
     "`reset` resets the system\n";
 
   send_message(chat_id, help);
@@ -187,13 +189,12 @@ void cmd_status(String chat_id, String from_name) {
   send_message(chat_id, msg);
 }
 
-void cmd_relay_on(String chat_id, String from_name) {
-   relay_set(1);
-   cmd_status(chat_id, from_name);
-}
-
-void cmd_relay_off(String chat_id, String from_name) {
-   relay_set(0);
+void cmd_relay_set(String chat_id, String from_name, int first_state, int second_state) {
+   relay_set(first_state);
+   if (second_state != -1) {
+     delay(1000);
+     relay_set(second_state);
+   }
    cmd_status(chat_id, from_name);
 }
 
@@ -216,8 +217,10 @@ void Bot_handleNewMessages(int numNewMessages) {
     else if (cmd == "status") cmd_status(chat_id, from_name);
     else if (cmd == "polarity") cmd_polarity(chat_id, from_name);
 
-    else if (cmd == "ron") cmd_relay_on(chat_id, from_name);
-    else if (cmd == "roff") cmd_relay_off(chat_id, from_name);
+    else if (cmd == "ron") cmd_relay_set(chat_id, from_name, 1, -1);
+    else if (cmd == "roff") cmd_relay_set(chat_id, from_name, 0, -1);
+    else if (cmd == "ronoff") cmd_relay_set(chat_id, from_name, 1, 0);
+    else if (cmd == "roffon") cmd_relay_set(chat_id, from_name, 0, 1);
 
     else if (cmd == "reset") {
       if (!firstMsg) ESP.reset();
@@ -242,7 +245,9 @@ void Bot_first_time() {
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
     "{\"command\":\"polarity\",\"description\":\"changes input polarity\"},"
     "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
-    "{\"command\":\"roff\",\"description\":\"turn relay off\"}"
+    "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
+    "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
+    "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"}"
   "]";
 
   bot.setMyCommands(commands);
