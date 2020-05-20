@@ -38,7 +38,7 @@ char WiFi_key[] = "Your Password";
 //////////////////
 
 void relay_set(int value);
-void cmd_status(String &chat_id, String &from_name);
+void cmd_status(String &chat_id);
 
 bool WiFi_ok = false;
 
@@ -124,7 +124,7 @@ void blink_loop() {
 
 void cmd_polarity(String &chat_id, String &from_name) {
   polarity_inverted = !polarity_inverted;
-  cmd_status(chat_id, from_name);
+  cmd_status(chat_id);
 }
 
 // Telegram Bot
@@ -163,7 +163,7 @@ void cmd_start(String &chat_id, String &from_name) {
 
   default_chat_id = chat_id;
   send_message(chat_id, welcome);
-  cmd_status(chat_id, from_name);
+  cmd_status(chat_id);
 
   /*
   DynamicJsonDocument doc(200);
@@ -188,7 +188,7 @@ void cmd_help(String &chat_id, String &from_name) {
   send_message(chat_id, help);
 }
 
-void cmd_status(String &chat_id, String &from_name) {
+void cmd_status(String &chat_id) {
   String in_st  = input_status?"Ok":"ALARMA!";
   String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"-":"+";
@@ -212,7 +212,7 @@ void cmd_relay_set(String &chat_id, String &from_name, int first_state, int seco
      delay(1000);
      relay_set(second_state);
    }
-   cmd_status(chat_id, from_name);
+   cmd_status(chat_id);
 }
 
 void Bot_handleNewMessages(int numNewMessages) {
@@ -233,7 +233,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     if (cmd == "start") cmd_start(chat_id, from_name);
 //    else if (cmd == "blink") cmd_blink();
 //    else if (cmd == "unblink") cmd_unblink();
-    else if (cmd == "status") cmd_status(chat_id, from_name);
+    else if (cmd == "status") cmd_status(chat_id);
     else if (cmd == "polarity") cmd_polarity(chat_id, from_name);
 
     else if (cmd == "ron") cmd_relay_set(chat_id, from_name, 1, -1);
@@ -304,12 +304,11 @@ void input_setup() {
 
 void input_loop() {
   bool new_status = input_read();
-  String none = String((char*)0);
   
   if (input_status != new_status) {
       input_status = new_status;
 #ifdef BOT_AND_WIFI
-      cmd_status(default_chat_id, none);
+      cmd_status(default_chat_id);
 #endif
   }
 }
