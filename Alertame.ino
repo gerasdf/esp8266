@@ -27,8 +27,8 @@ int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
 
 #define TelegramBotToken "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
 
-String default_chat_id = "25235518"; // gera
-// String default_chat_id = "268186747"; // Agu
+String default_chat_id = F("25235518"); // gera
+// String default_chat_id = F("268186747"); // Agu
 
 #ifndef AUTOCONNECT
 char WiFi_ssid[] = "Your Fixed ESSID";
