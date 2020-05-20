@@ -158,8 +158,8 @@ bool is_for_me(int message_index) {
 }
 
 // Greeter
-void cmd_start(String &chat_id, String &from_name) {
-  String welcome = "Hola, " + from_name + ". your `chat_id` is " + chat_id;
+void cmd_start(String &chat_id) {
+  String welcome = "Hola, your `chat_id` is " + chat_id;
 
   default_chat_id = chat_id;
   send_message(chat_id, welcome);
@@ -222,15 +222,13 @@ void Bot_handleNewMessages(int numNewMessages) {
     
     String chat_id = String(bot.messages[i].chat_id);
     String cmd = bot.messages[i].text;
-    String from_name = bot.messages[i].from_name;
 
     cmd.toLowerCase();
     if (cmd[0] == '/') cmd.remove(0,1);
-    if (from_name == "") from_name = "GUEST";
 
-    Serial.println("\nReceived \"" + cmd + "\" from " + from_name);
+    Serial.println("\nReceived \"" + cmd + "\" from " + chat_id);
 
-    if (cmd == "start") cmd_start(chat_id, from_name);
+    if (cmd == "start") cmd_start(chat_id);
 //    else if (cmd == "blink") cmd_blink();
 //    else if (cmd == "unblink") cmd_unblink();
     else if (cmd == "status") cmd_status(chat_id);
@@ -268,12 +266,11 @@ void Bot_first_time() {
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"}"
   "]");
-  String none = String((char*)0);
 
   bot.setMyCommands(commands);
   
   if (default_chat_id != "") {
-    cmd_start(default_chat_id, none);
+    cmd_start(default_chat_id);
   }
 }
 
