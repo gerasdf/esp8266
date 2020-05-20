@@ -142,6 +142,15 @@ void send_message(String chat_id, String text) {
   bot.sendMessage(chat_id, String("*"MY_NAME "*: ") + text, "Markdown");
 }
 
+bool is_for_me(int message_index) {
+  // Serial.println(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
+  // Only accept answers to other messages
+  if (0 == bot.messages[message_index].reply_to_message_id) return false;
+
+  // Only accept answers to my messages
+  return bot.messages[message_index].reply_to_text.startsWith(MY_NAME ":");
+}
+
 // Greeter
 void cmd_start(String chat_id, String from_name) {
   String welcome = "Hola, " + from_name + ". your `chat_id` is " + chat_id;
@@ -201,6 +210,8 @@ void cmd_relay_set(String chat_id, String from_name, int first_state, int second
 void Bot_handleNewMessages(int numNewMessages) {
   static bool firstMsg = true;
   for (int i = 0; i < numNewMessages; i++) {
+    if (!is_for_me(i)) continue;
+    
     String chat_id = String(bot.messages[i].chat_id);
     String cmd = bot.messages[i].text;
     String from_name = bot.messages[i].from_name;
