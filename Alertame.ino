@@ -259,17 +259,10 @@ void Bot_loop() {
     Bot_first_time();
   }
   if (millis() > Bot_nexttime)  {
-    Serial.print("/");
-    int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-    if (!numNewMessages) {
-      Serial.print("-");
-    }
-    while (numNewMessages) {
-      Serial.print("+");
-      Bot_handleNewMessages(numNewMessages);
-      numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-    }
     Bot_nexttime = millis() + Bot_mtbs_ms;
+
+    int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
+    Bot_handleNewMessages(numNewMessages);
   }
 }
 
