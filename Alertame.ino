@@ -38,7 +38,7 @@ char WiFi_key[] = "Your Password";
 //////////////////
 
 void relay_set(int value);
-void cmd_status(String chat_id, String from_name);
+void cmd_status(String &chat_id, String &from_name);
 
 bool WiFi_ok = false;
 
@@ -122,7 +122,7 @@ void blink_loop() {
   Serial.println(value);
 }
 
-void cmd_polarity(String chat_id, String from_name) {
+void cmd_polarity(String &chat_id, String &from_name) {
   polarity_inverted = !polarity_inverted;
   cmd_status(chat_id, from_name);
 }
@@ -137,7 +137,7 @@ bool Bot_greeted = false;
 
 // General
 
-void send_message(String chat_id, String text) {
+void send_message(String &chat_id, String &text) {
   String msg = F("*" MY_NAME "*: ");
   
   if (chat_id == "") chat_id = default_chat_id;
@@ -158,11 +158,11 @@ bool is_for_me(int message_index) {
 }
 
 // Greeter
-void cmd_start(String chat_id, String from_name) {
+void cmd_start(String &chat_id, String &from_name) {
   String welcome = "Hola, " + from_name + ". your `chat_id` is " + chat_id;
 
   default_chat_id = chat_id;
-  send_message("", welcome);
+  send_message(chat_id, welcome);
   cmd_status(chat_id, from_name);
 
   /*
@@ -174,7 +174,7 @@ void cmd_start(String chat_id, String from_name) {
   */
 }
 
-void cmd_help(String chat_id, String from_name) {
+void cmd_help(String &chat_id, String &from_name) {
   String help = F("\n"
     "`status` shows all status\n"
     "`polarity` changes input polarity\n"
@@ -188,7 +188,7 @@ void cmd_help(String chat_id, String from_name) {
   send_message(chat_id, help);
 }
 
-void cmd_status(String chat_id, String from_name) {
+void cmd_status(String &chat_id, String &from_name) {
   String in_st  = input_status?"Ok":"ALARMA!";
   String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"-":"+";
@@ -206,7 +206,7 @@ void cmd_status(String chat_id, String from_name) {
   send_message(chat_id, msg);
 }
 
-void cmd_relay_set(String chat_id, String from_name, int first_state, int second_state) {
+void cmd_relay_set(String &chat_id, String &from_name, int first_state, int second_state) {
    relay_set(first_state);
    if (second_state != -1) {
      delay(1000);
@@ -268,11 +268,12 @@ void Bot_first_time() {
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"}"
   "]");
+  String none = String((char*)0);
 
   bot.setMyCommands(commands);
   
   if (default_chat_id != "") {
-    cmd_start(default_chat_id, "");
+    cmd_start(default_chat_id, none);
   }
 }
 
@@ -303,11 +304,12 @@ void input_setup() {
 
 void input_loop() {
   bool new_status = input_read();
+  String none = String((char*)0);
   
   if (input_status != new_status) {
       input_status = new_status;
 #ifdef BOT_AND_WIFI
-      cmd_status("","");
+      cmd_status(default_chat_id, none);
 #endif
   }
 }
