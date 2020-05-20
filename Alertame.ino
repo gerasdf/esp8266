@@ -139,7 +139,7 @@ bool Bot_greeted = false;
 
 void send_message(String chat_id, String text) {
   if (chat_id == "") chat_id = default_chat_id;
-  bot.sendMessage(chat_id, String("`"MY_NAME "`: ") + text, "Markdown");
+  bot.sendMessage(chat_id, String("*"MY_NAME "*: ") + text, "Markdown");
 }
 
 // Greeter
@@ -176,7 +176,13 @@ void cmd_status(String chat_id, String from_name) {
   String rel_st = relay_state?"On":"Off";
   String pol = polarity_inverted?"inverted":"normal";
   
-  String msg = "status: " + in_st + " relay: " + rel_st + " polarity: " + pol + " last: " + bot.last_sent_message_id + "\n";
+  String msg = 
+    "status: *" + in_st + 
+    "* relay: *" + rel_st +
+    "* polarity: *" + pol +
+    "* uptime: *" + millis()/1000 +
+    "* last: " + bot.last_sent_message_id +
+    "\n";
   
   send_message(chat_id, msg);
 }
