@@ -1,8 +1,7 @@
 /* Adaptado de el ejemplo original por Cesar Riojas
     www.arduinocentermx.blogspot.mx
     Autoconnect: https://www.hackster.io/hieromon-ikasamo/esp8266-esp32-connect-wifi-made-easy-d75f45
-        ESSID: esp8266ap / 12345678
- * */
+ */
 #define BOT_AND_WIFI
 #define AUTOCONNECT
 
