@@ -214,8 +214,14 @@ void cmd_relay_set(String &chat_id, int first_state, int second_state) {
    cmd_status(chat_id);
 }
 
+void delay_next_poll() {
+  Bot_nexttime += Bot_mtbs_ms;
+}
+
 void Bot_handleNewMessages(int numNewMessages) {
   static bool firstMsg = true;
+  bool message_for_other_device = false;
+  
   for (int i = 0; i < numNewMessages; i++) {
     String chat_id = String(bot.messages[i].chat_id);
     String cmd = bot.messages[i].text;
@@ -226,8 +232,14 @@ void Bot_handleNewMessages(int numNewMessages) {
     Serial.println("\nReceived \"" + cmd + "\" from " + chat_id);
 
     // Global messages (acceptable for all devices at the same time, without any filtering)
-    if (cmd == "start") cmd_start(chat_id);
-    else if (cmd == "allstatus") cmd_status(chat_id);
+    if (cmd == "start") {
+      cmd_start(chat_id);
+      message_for_other_device = true;
+    }
+    else if (cmd == "allstatus") {
+      cmd_status(chat_id);
+      message_for_other_device = true;
+    }
     
     // Device commands (only acceptable if directed to a particular device)
     else if (is_for_me(i)) {
@@ -244,10 +256,13 @@ void Bot_handleNewMessages(int numNewMessages) {
         if (!firstMsg) ESP.reset();
       }
       else cmd_help(chat_id);
+    } else {
+      message_for_other_device = true;
     }
     
     firstMsg = false;
   }
+  if (message_for_other_device) delay_next_poll();
 }
 
 void Bot_setup() {
