@@ -55,7 +55,7 @@ void WiFi_setup() {
   } else {
     Serial.println("connection failed:");
   }
-#else // AUTOCONNECT
+#else // not AUTOCONNECT
   // Establecer el modo WiFi y desconectarse de un AP si fue Anteriormente conectada
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -71,7 +71,7 @@ void WiFi_setup() {
 void WiFi_loop() {
 #ifdef AUTOCONNECT
   portal.handleClient();
-#else // AUTOCONNECT
+#else // not AUTOCONNECT
   static long lastCheck = 0;
   bool next_ok;
 
