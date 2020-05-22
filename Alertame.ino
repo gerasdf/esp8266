@@ -48,7 +48,9 @@ WiFiClientSecure client;
 
 void WiFi_setup() {
 #ifdef AUTOCONNECT
-  portal.config(MY_NAME, MY_NAME "Password2020!");
+  AutoConnectConfig portalConfig(MY_NAME, MY_NAME "Password2020!");
+  portalConfig.ota = AC_OTA_BUILTIN;
+  portal.config(portalConfig);
   if (portal.begin()) {
     Serial.println("connected:" + WiFi.SSID());
     Serial.println("IP:" + WiFi.localIP().toString());
