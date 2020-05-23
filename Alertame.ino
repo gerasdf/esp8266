@@ -1,4 +1,4 @@
-/* Adaptado de el ejemplo original por Cesar Riojas
+/* Adaptado de el ejemplo original por Cesar Riojas entre otras miles de cosas
     www.arduinocentermx.blogspot.mx
     Autoconnect: https://www.hackster.io/hieromon-ikasamo/esp8266-esp32-connect-wifi-made-easy-d75f45
  */
