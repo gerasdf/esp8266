@@ -23,6 +23,14 @@ AutoConnect portal;
 String default_chat_id = "25235518"; // gera
 // String default_chat_id = "268186747"; // Agu
 
+#ifdef ALERT_DEBUG
+#define DPRINTLN(X)  debug_log(X);
+#define DPRINT(X)    debug_log(X, false);
+#else
+#define DPRINTLN(X)
+#define DPRINT(X)
+#endif 
+
 bool polarity_inverted = true;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
