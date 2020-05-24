@@ -4,6 +4,7 @@
  */
 #define BOT_AND_WIFI
 #define AUTOCONNECT
+#define ALERT_DEBUG
 
 #include "git-version.h"
 #include <ESP8266WiFi.h>
@@ -46,6 +47,16 @@ int relay_state;
 
 WiFiClientSecure client;
 
+void debug_log(String &msg, bool ln = true) {   
+  String line("[");
+
+  line += millis()/1000;
+  line += "] ";
+  line += msg;
+  if (ln) Serial.println(line);
+  else Serial.print(line);
+}
+
 void WiFi_setup() {
 #ifdef AUTOCONNECT
   AutoConnectConfig portalConfig(MY_NAME, MY_NAME "Password2020!");
@@ -81,7 +92,7 @@ void WiFi_loop() {
     next_ok = WiFi.status() == WL_CONNECTED;
 
     if (!next_ok) {
-      Serial.print(".");
+      DPRINT(".");
     }
 
     if (next_ok && !WiFi_ok) {
@@ -144,12 +155,12 @@ void send_message(String &chat_id, String &text) {
   if (chat_id == "") chat_id = default_chat_id;
   
   msg += text;
-  Serial.println(msg);
+  debug_log(msg);
   bot.sendMessage(chat_id, msg, "Markdown");
 }
 
 bool is_for_me(int message_index) {
-  Serial.println(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
+  DPRINTLN(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
   
   // Only accept answers to other messages
   if (0 == bot.messages[message_index].reply_to_message_id) return false;
@@ -231,7 +242,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     cmd.toLowerCase();
     if (cmd[0] == '/') cmd.remove(0,1);
 
-    Serial.println("\nReceived \"" + cmd + "\" from " + chat_id);
+    debug_log("Received \"" + cmd + "\" from " + chat_id);
 
     // Global messages (acceptable for all devices at the same time, without any filtering)
     if (cmd == "start") {
@@ -304,6 +315,7 @@ void Bot_loop() {
     Bot_nexttime = millis() + Bot_mtbs_ms;
 
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
+    DPRINTLN((String("numNewMessages: ") + numNewMessages + " last: " + bot.last_message_received));
     Bot_handleNewMessages(numNewMessages);
   }
 }
