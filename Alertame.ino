@@ -220,6 +220,19 @@ void cmd_status(String &chat_id) {
   msg += rel_st;
   msg += F("* polarity: *");
   msg += pol;
+  msg += F("*");
+  
+  send_message(chat_id, msg);
+}
+
+void cmd_info(String &chat_id) {
+
+  String msg = F("IP: *");
+  msg += WiFi.localIP().toString();
+  msg += F("* ESSID: *");
+  msg += WiFi.SSID();
+  msg += F("* RAM: *");
+  msg += ESP.getFreeHeap();
   msg += F("* uptime: *");
   msg += millis()/1000;
   msg += F("*");
@@ -279,18 +292,22 @@ void Bot_handleNewMessages(int numNewMessages) {
       cmd_status(chat_id);
       message_for_other_device = true;
     }
+    else if (cmd == "allinfo") {
+      cmd_info(chat_id);
+      message_for_other_device = true;
+    }
     
     // Device commands (only acceptable if directed to a particular device)
     else if (is_for_me(i)) {
-      if (cmd == "status") cmd_status(chat_id);
+      if      (cmd == "status") cmd_status(chat_id);
       else if (cmd == "polarity") cmd_polarity(chat_id);
       else if (cmd == "ron") cmd_relay_set(chat_id, 1, -1);
       else if (cmd == "roff") cmd_relay_set(chat_id, 0, -1);
       else if (cmd == "ronoff") cmd_relay_set(chat_id, 1, 0);
       else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
-//    else if (cmd == "blink") cmd_blink();
-//    else if (cmd == "unblink") cmd_unblink();
-  
+      else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
+      else if (cmd == "info") cmd_info(chat_id);
+        
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
@@ -322,7 +339,9 @@ void Bot_first_time() {
     "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
     "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
-    "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"}"
+    "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
+    "{\"command\":\"allinfo\",\"description\":\"answer all devices technical info\"},"
+    "{\"command\":\"info\",\"description\":\"answer device technical info\"},"
   "]");
 
   bot.setMyCommands(commands);
