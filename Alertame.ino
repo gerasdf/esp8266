@@ -235,7 +235,8 @@ void cmd_sysinfo(String &chat_id) {
   msg += ESP.getFreeHeap();
   msg += F("* uptime: *");
   msg += millis()/1000;
-  msg += F("*");
+  msg += F("* version: *" GIT_VERSION "*");
+  // msg += F("*");
   
   send_message(chat_id, msg);
 }
