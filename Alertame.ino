@@ -10,6 +10,7 @@
 #include <ESP8266WiFi.h>
 #include <UniversalTelegramBot.h>
 #include <ArduinoOTA.h>
+#include <ESP8266httpUpdate.h>
 #include <WiFiClientSecure.h>
 #ifdef AUTOCONNECT
 #include <AutoConnect.h>
@@ -235,6 +236,23 @@ void cmd_relay_set(String &chat_id, int first_state, int second_state) {
    cmd_status(chat_id);
 }
 
+void cmd_sent_file(int i) {
+  DPRINTLN((String("Received document: ") + bot.messages[i].file_caption + " size: " + bot.messages[i].file_size));
+  DPRINTLN((String("URL: ") + bot.messages[i].file_path));
+  t_httpUpdate_return ret = ESPhttpUpdate.update(bot.messages[i].file_path);
+  switch (ret) {
+    case HTTP_UPDATE_FAILED:
+      Serial.printf("HTTP_UPDATE_FAILD Error (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+      break;
+    case HTTP_UPDATE_NO_UPDATES:
+      Serial.println("HTTP_UPDATE_NO_UPDATES");
+      break;
+    case HTTP_UPDATE_OK:
+      Serial.println("HTTP_UPDATE_OK");
+      break;
+  }
+}
+
 void delay_next_poll() {
   Bot_nexttime += Bot_mtbs_ms;
 }
@@ -276,6 +294,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
+      else if (bot.messages[i].hasDocument) cmd_sent_file(i);
       else cmd_help(chat_id);
     } else {
       message_for_other_device = true;
