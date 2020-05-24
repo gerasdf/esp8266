@@ -38,10 +38,10 @@ bool polarity_inverted = true;
 int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
 int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
 
-
 #ifndef AUTOCONNECT
 char WiFi_ssid[] = "Your Fixed ESSID";
 char WiFi_key[] = "Your Password";
+
 #endif // AUTOCONNECT
 
 //////////////////
