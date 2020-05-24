@@ -225,7 +225,7 @@ void cmd_status(String &chat_id) {
   send_message(chat_id, msg);
 }
 
-void cmd_info(String &chat_id) {
+void cmd_sysinfo(String &chat_id) {
 
   String msg = F("IP: *");
   msg += WiFi.localIP().toString();
@@ -292,8 +292,8 @@ void Bot_handleNewMessages(int numNewMessages) {
       cmd_status(chat_id);
       message_for_other_device = true;
     }
-    else if (cmd == "allinfo") {
-      cmd_info(chat_id);
+    else if (cmd == "allsysinfo") {
+      cmd_sysinfo(chat_id);
       message_for_other_device = true;
     }
     
@@ -306,7 +306,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "ronoff") cmd_relay_set(chat_id, 1, 0);
       else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
       else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
-      else if (cmd == "info") cmd_info(chat_id);
+      else if (cmd == "sysinfo") cmd_sysinfo(chat_id);
         
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
@@ -340,8 +340,8 @@ void Bot_first_time() {
     "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
-    "{\"command\":\"allinfo\",\"description\":\"answer all devices technical info\"},"
-    "{\"command\":\"info\",\"description\":\"answer device technical info\"},"
+    "{\"command\":\"allsysinfo\",\"description\":\"answer all devices system info\"},"
+    "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"},"
   "]");
 
   bot.setMyCommands(commands);

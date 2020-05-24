@@ -32,6 +32,6 @@
  * -----------------------------------------------------------------------
  */
 
-#ifndef GIT_HASH
-#define GIT_HASH "no-git-hash-support"
+#ifndef GIT_VERSION
+#define GIT_VERSION "no-git-hash-support"
 #endif
