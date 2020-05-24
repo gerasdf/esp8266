@@ -5,6 +5,7 @@
 #define BOT_AND_WIFI
 #define AUTOCONNECT
 
+#include "git-version.h"
 #include <ESP8266WiFi.h>
 #include <UniversalTelegramBot.h>
 #include <ArduinoOTA.h>
@@ -175,7 +176,7 @@ void cmd_start(String &chat_id) {
 }
 
 void cmd_help(String &chat_id) {
-  String help = F("\n"
+  String help = F("\n" GIT_VERSION "\n"
     "`status` shows all status\n"
     "`polarity` changes input polarity\n"
     "`start` registers who will receive alerts\n"
