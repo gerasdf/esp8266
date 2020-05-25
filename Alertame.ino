@@ -344,7 +344,7 @@ void Bot_first_time() {
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
     "{\"command\":\"allsysinfo\",\"description\":\"answer all devices system info\"},"
-    "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"},"
+    "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"}"
   "]");
 
   bot.setMyCommands(commands);
