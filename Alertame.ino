@@ -227,15 +227,17 @@ void cmd_status(String &chat_id) {
 
 void cmd_sysinfo(String &chat_id) {
 
-  String msg = F("IP: *");
+  String msg = F("\nIP: *");
   msg += WiFi.localIP().toString();
-  msg += F("* ESSID: *");
+  msg += F("*\nESSID: *");
   msg += WiFi.SSID();
-  msg += F("* RAM: *");
+  msg += F("*\nSignal: *");
+  msg += WiFi.RSSI();
+  msg += F(" dBm*\nRAM: *");
   msg += ESP.getFreeHeap();
-  msg += F("* uptime: *");
+  msg += F("*\nuptime: *");
   msg += millis()/1000;
-  msg += F("* version: *" GIT_VERSION "*");
+  msg += F("*\nversion: *" GIT_VERSION "*");
   // msg += F("*");
   
   send_message(chat_id, msg);
