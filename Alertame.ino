@@ -169,8 +169,7 @@ void send_message(String &chat_id, String &text) {
 }
 
 bool is_for_me(int message_index) {
-  DPRINTLN(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
-  
+ 
   // Only accept answers to other messages
   if (0 == bot.messages[message_index].reply_to_message_id) return false;
 
@@ -364,7 +363,7 @@ void Bot_loop() {
     Bot_nexttime = millis() + Bot_mtbs_ms;
 
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-    DPRINTLN((String("numNewMessages: ") + numNewMessages + " last: " + bot.last_message_received));
+    DPRINTLN((String("numNewMessages: ") + numNewMessages + " last: " + bot.last_message_received) + " mem: " + ESP.getFreeHeap());
     Bot_handleNewMessages(numNewMessages);
   }
 }
