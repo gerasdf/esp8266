@@ -169,9 +169,10 @@ void send_message(String &chat_id, String &text) {
 }
 
 bool is_for_me(int message_index) {
- 
+  DPRINTLN(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
+
   // Only accept answers to other messages
-  if (0 == bot.messages[message_index].reply_to_message_id) return false;
+  // if (0 == bot.messages[message_index].reply_to_message_id) return false;
 
   // Only accept answers to my messages
   return bot.messages[message_index].reply_to_text.startsWith(MY_NAME ":");
@@ -242,6 +243,20 @@ void cmd_sysinfo(String &chat_id) {
   send_message(chat_id, msg);
 }
 
+void cmd_keyboard(String &chat_id) {
+  String keyboard = F("["
+     "[{\"text\":\"sysinfo\",\"callback_data\":\"sysinfo\"},"
+     "{\"text\":\"status\",\"callback_data\":\"status\"},"
+     "{\"text\":\"polarity\",\"callback_data\":\"polarity\"}],"
+     "[{\"text\":\"ron\",\"callback_data\":\"ron\"},"
+     "{\"text\":\"roff\",\"callback_data\":\"roff\"}],"
+     "[{\"text\":\"ronoff\",\"callback_data\":\"ronoff\"},"
+     "{\"text\":\"roffon\",\"callback_data\":\"roffon\"}]"
+     "]}"
+  );
+  bot.sendMessageWithInlineKeyboard(chat_id, F("*" MY_NAME "*: use the keyboard"), "Markdown", keyboard); //, false, true, false);
+}
+
 void cmd_relay_set(String &chat_id, int first_state, int second_state) {
    relay_set(first_state);
    if (second_state != -1) {
@@ -309,7 +324,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
       else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
       else if (cmd == "sysinfo") cmd_sysinfo(chat_id);
-        
+      else if (cmd == "keyboard") cmd_keyboard(chat_id);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
