@@ -335,21 +335,23 @@ void Bot_setup() {
   client.setInsecure();
   Bot_nexttime = millis() - 1;
   bot.longPoll = 1;
+  bot.maxMessageLength = 3000;
 }
 
 void Bot_first_time() {
   String commands = F("["
-    "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
-    "{\"command\":\"reset\", \"description\":\"reset device\"},"
-    "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
     "{\"command\":\"allstatus\",\"description\":\"answer all devices current status\"},"
-    "{\"command\":\"status\",\"description\":\"answer device current status\"},"
-    "{\"command\":\"polarity\",\"description\":\"changes input polarity\"},"
-    "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
-    "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
-    "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
-    "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
     "{\"command\":\"allsysinfo\",\"description\":\"answer all devices system info\"},"
+    "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
+    "{\"command\":\"keyboard\",  \"description\":\"display keyboard\"},"
+    "{\"command\":\"polarity\",\"description\":\"changes input polarity\"},"
+    "{\"command\":\"reset\", \"description\":\"reset device\"},"
+    "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
+    "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
+    "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
+    "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
+    "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
+    "{\"command\":\"status\",\"description\":\"answer device current status\"},"
     "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"}"
   "]");
 
