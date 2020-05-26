@@ -196,15 +196,7 @@ void cmd_start(String &chat_id) {
 }
 
 void cmd_help(String &chat_id) {
-  String help = F("\n" GIT_VERSION "\n"
-    "`status` shows all status\n"
-    "`polarity` changes input polarity\n"
-    "`start` registers who will receive alerts\n"
-    "`ron` turns on Relay\n"
-    "`roff` turns off Relay\n"
-    "`ronoff` turns on Relay then off\n"
-    "`roffon` turns off Relay then on\n"
-    "`reset` resets the system\n");
+  String help = F(" See commands help when pressing the `/` button");
 
   send_message(chat_id, help);
 }
