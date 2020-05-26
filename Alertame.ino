@@ -19,10 +19,11 @@ AutoConnect portal;
 
 // All Configuration options
 
-#define MY_NAME     "Caldera0"
+#define MY_NAME     "Caldera2"
 #define TelegramBotToken "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
-String default_chat_id = "25235518"; // gera
-// String default_chat_id = "268186747"; // Agu
+String default_chat_id = 
+                         "25235518"; // gera
+//                       "268186747"; // Agu
 
 #ifdef ALERT_DEBUG
 #define DPRINTLN(X)  debug_log(X);
