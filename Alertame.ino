@@ -376,7 +376,13 @@ void Bot_loop() {
     Bot_nexttime = millis() + Bot_mtbs_ms;
 
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-    DPRINTLN((String("numNewMessages: ") + numNewMessages + " last: " + bot.last_message_received) + " mem: " + ESP.getFreeHeap());
+    DPRINTLN((
+      String("numNewMessages: ") + numNewMessages +
+      " last: " + bot.last_message_received) +
+      " mem: " + ESP.getFreeHeap() +
+      F(" - ") + ESP.getHeapFragmentation() +
+      F(" - ") + ESP.getMaxFreeBlockSize()
+    );
     Bot_handleNewMessages(numNewMessages);
   }
 }
