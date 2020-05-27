@@ -260,7 +260,11 @@ void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
      relay_set(second_state);
    }
    if (msg.query_id) {
-     bot.answerCallbackQuery(msg.query_id, F("Relay done"));
+     String answer = F("Relay ");
+     answer += first_state?"On":"Off";
+     if (second_state != -1)
+       answer += second_state?"-On":"-Off";
+     bot.answerCallbackQuery(msg.query_id, answer);
    } else {
      cmd_status(msg.chat_id);
    }
