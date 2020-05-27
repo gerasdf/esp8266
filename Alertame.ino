@@ -171,14 +171,14 @@ void send_message(String &chat_id, String &text) {
   bot.sendMessage(chat_id, msg, "Markdown");
 }
 
-bool is_for_me(int message_index) {
-  DPRINTLN(String("reply to: ") + bot.messages[message_index].reply_to_message_id + " text: " + bot.messages[message_index].reply_to_text);
+bool is_for_me(telegramMessage &msg) {
+  DPRINTLN(String("reply to: ") + msg.reply_to_message_id + " text: " + msg.reply_to_text);
 
   // Only accept answers to other messages
-  // if (0 == bot.messages[message_index].reply_to_message_id) return false;
+  // if (0 == msg.reply_to_message_id) return false;
 
   // Only accept answers to my messages
-  return bot.messages[message_index].reply_to_text.startsWith(MY_NAME ":");
+  return msg.reply_to_text.startsWith(MY_NAME ":");
 }
 
 // Greeter
@@ -288,43 +288,43 @@ void Bot_handleNewMessages(int numNewMessages) {
   bool message_for_other_device = false;
   
   for (int i = 0; i < numNewMessages; i++) {
-    String chat_id = String(bot.messages[i].chat_id);
-    String cmd = bot.messages[i].text;
+    telegramMessage &msg = bot.messages[i];
+    String cmd = msg.text;
 
     cmd.toLowerCase();
     if (cmd[0] == '/') cmd.remove(0,1);
 
-    debug_log("Received \"" + cmd + "\" from " + chat_id);
+    debug_log("Received \"" + cmd + "\" from " + msg.chat_id);
 
     // Global messages (acceptable for all devices at the same time, without any filtering)
     if (cmd == "start") {
-      cmd_start(chat_id);
+      cmd_start(msg.chat_id);
       message_for_other_device = true;
     }
     else if (cmd == "allstatus") {
-      cmd_status(chat_id);
+      cmd_status(msg.chat_id);
       message_for_other_device = true;
     }
     else if (cmd == "allsysinfo") {
-      cmd_sysinfo(chat_id);
+      cmd_sysinfo(msg.chat_id);
       message_for_other_device = true;
     }
     
     // Device commands (only acceptable if directed to a particular device)
-    else if (is_for_me(i)) {
-      if      (cmd == "status") cmd_status(chat_id);
-      else if (cmd == "polarity") cmd_polarity(chat_id);
-      else if (cmd == "ron") cmd_relay_set(bot.messages[i], 1, -1);
-      else if (cmd == "roff") cmd_relay_set(bot.messages[i], 0, -1);
-      else if (cmd == "ronoff") cmd_relay_set(bot.messages[i], 1, 0);
-      else if (cmd == "roffon") cmd_relay_set(bot.messages[i], 0, 1);
-      else if (cmd == "sysinfo") cmd_sysinfo(chat_id);
-      else if (cmd == "keyboard") cmd_keyboard(chat_id);
+    else if (is_for_me(msg)) {
+      if      (cmd == "status") cmd_status(msg.chat_id);
+      else if (cmd == "polarity") cmd_polarity(msg.chat_id);
+      else if (cmd == "ron") cmd_relay_set(msg, 1, -1);
+      else if (cmd == "roff") cmd_relay_set(msg, 0, -1);
+      else if (cmd == "ronoff") cmd_relay_set(msg, 1, 0);
+      else if (cmd == "roffon") cmd_relay_set(msg, 0, 1);
+      else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
+      else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
       else if (bot.messages[i].hasDocument) cmd_sent_file(i);
-      else cmd_help(chat_id);
+      else cmd_help(msg.chat_id);
     } else {
       message_for_other_device = true;
     }
