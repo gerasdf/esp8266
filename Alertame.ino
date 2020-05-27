@@ -253,13 +253,13 @@ void cmd_keyboard(String &chat_id) {
   bot.sendMessageWithInlineKeyboard(chat_id, F("*" MY_NAME "*: use the keyboard"), "Markdown", keyboard); //, false, true, false);
 }
 
-void cmd_relay_set(String &chat_id, int first_state, int second_state) {
+void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
    relay_set(first_state);
    if (second_state != -1) {
      delay(1000);
      relay_set(second_state);
    }
-   cmd_status(chat_id);
+   cmd_status(msg.chat_id);
 }
 
 void cmd_sent_file(int i) {
@@ -314,11 +314,11 @@ void Bot_handleNewMessages(int numNewMessages) {
     else if (is_for_me(i)) {
       if      (cmd == "status") cmd_status(chat_id);
       else if (cmd == "polarity") cmd_polarity(chat_id);
-      else if (cmd == "ron") cmd_relay_set(chat_id, 1, -1);
-      else if (cmd == "roff") cmd_relay_set(chat_id, 0, -1);
-      else if (cmd == "ronoff") cmd_relay_set(chat_id, 1, 0);
-      else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
-      else if (cmd == "roffon") cmd_relay_set(chat_id, 0, 1);
+      else if (cmd == "ron") cmd_relay_set(bot.messages[i], 1, -1);
+      else if (cmd == "roff") cmd_relay_set(bot.messages[i], 0, -1);
+      else if (cmd == "ronoff") cmd_relay_set(bot.messages[i], 1, 0);
+      else if (cmd == "roffon") cmd_relay_set(bot.messages[i], 0, 1);
+      else if (cmd == "roffon") cmd_relay_set(bot.messages[i], 0, 1);
       else if (cmd == "sysinfo") cmd_sysinfo(chat_id);
       else if (cmd == "keyboard") cmd_keyboard(chat_id);
       else if (cmd == "reset") {
