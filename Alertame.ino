@@ -259,7 +259,11 @@ void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
      delay(1000);
      relay_set(second_state);
    }
-   cmd_status(msg.chat_id);
+   if (msg.query_id) {
+     bot.answerCallbackQuery(msg.query_id, F("Relay done"));
+   } else {
+     cmd_status(msg.chat_id);
+   }
 }
 
 void cmd_sent_file(int i) {
