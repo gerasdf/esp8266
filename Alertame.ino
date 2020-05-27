@@ -100,7 +100,7 @@ void WiFi_loop() {
   static long lastCheck = 0;
   bool next_ok;
 
-  if (millis() - lastCheck > 500) {
+  if (millis() - lastCheck > 1000) {
     next_ok = WiFi.status() == WL_CONNECTED;
 
     if (!next_ok) {
