@@ -17,6 +17,8 @@
 AutoConnect portal;
 #endif
 
+int OTA_delay = 3;
+
 // All Configuration options
 
 #define MY_NAME     "Caldera2"
@@ -234,6 +236,7 @@ void cmd_sysinfo(String &chat_id) {
   // msg += F("*");
   
   send_message(chat_id, msg);
+  if (OTA_delay) OTA_delay--;
 }
 
 void cmd_keyboard(String &chat_id) {
@@ -441,7 +444,7 @@ void OTA_setup() {
 }
 
 void OTA_loop() {
-  ArduinoOTA.handle();
+  if (OTA_delay == 0) ArduinoOTA.handle();
 }
 
 /////////// Relay
