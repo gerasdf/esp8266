@@ -57,7 +57,7 @@ int relay_state;
 
 WiFiClientSecure client;
 
-void debug_log(String &msg, bool ln = true) {   
+void debug_log(const String &msg, bool ln = true) {   
   String line("[");
 
   line += millis()/1000;
