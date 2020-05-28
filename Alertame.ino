@@ -146,11 +146,6 @@ void blink_loop() {
   Serial.println(value);
 }
 
-void cmd_polarity(String &chat_id) {
-  polarity_inverted = !polarity_inverted;
-  cmd_status(chat_id);
-}
-
 // Telegram Bot
 
 UniversalTelegramBot bot(TelegramBotToken, client);
@@ -253,6 +248,18 @@ void cmd_keyboard(String &chat_id) {
   bot.sendMessageWithInlineKeyboard(chat_id, F("*" MY_NAME "*: use the keyboard"), "Markdown", keyboard); //, false, true, false);
 }
 
+void cmd_polarity(telegramMessage &msg) {
+  polarity_inverted = !polarity_inverted;
+  
+  if (msg.query_id) {
+    String answer = F("Polarity is now ");
+    answer += polarity_inverted?"-":"+";
+    bot.answerCallbackQuery(msg.query_id, answer);
+  } else {
+    cmd_status(msg.chat_id);
+  }
+}
+
 void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
    relay_set(first_state);
    if (second_state != -1) {
@@ -321,7 +328,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     // Device commands (only acceptable if directed to a particular device)
     else if (is_for_me(msg)) {
       if      (cmd == "status") cmd_status(msg.chat_id);
-      else if (cmd == "polarity") cmd_polarity(msg.chat_id);
+      else if (cmd == "polarity") cmd_polarity(msg);
       else if (cmd == "ron") cmd_relay_set(msg, 1, -1);
       else if (cmd == "roff") cmd_relay_set(msg, 0, -1);
       else if (cmd == "ronoff") cmd_relay_set(msg, 1, 0);
