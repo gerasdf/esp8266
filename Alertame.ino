@@ -17,15 +17,12 @@
 AutoConnect portal;
 #endif
 
-int OTA_delay = 3;
+int OTA_delay = 0;
 
 // All Configuration options
 
-#define MY_NAME     "Caldera2"
-#define TelegramBotToken "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
-String default_chat_id = 
-                         "25235518"; // gera
-//                       "268186747"; // Agu
+#define MY_NAME            "Caldera2"
+#define TELEGRAM_BOT_TOKEN "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
 
 #ifdef ALERT_DEBUG
 #define DPRINTLN(X)  debug_log(X);
@@ -35,7 +32,14 @@ String default_chat_id =
 #define DPRINT(X)
 #endif 
 
-bool polarity_inverted = true;
+class Config {
+public:
+  String owner_id = "25235518"; // gera;
+  String token = TELEGRAM_BOT_TOKEN;
+  String name = MY_NAME;
+  String password =  MY_NAME "Password2020!";
+  bool polarity_inverted = true;
+} config;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
 int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
@@ -71,7 +75,7 @@ void debug_log(const String &msg, bool ln = true) {
 
 void WiFi_setup() {
 #ifdef AUTOCONNECT
-  AutoConnectConfig portalConfig(MY_NAME, MY_NAME "Password2020!");
+  AutoConnectConfig portalConfig(config.name.c_str(), config.password.c_str());
   portalConfig.ota = AC_OTA_BUILTIN;
   portal.config(portalConfig);
   if (portal.begin()) {
@@ -131,7 +135,7 @@ void cmd_unblink() {
 
 void blink_setup() {
   cmd_unblink();
-  Serial.println("I'm " MY_NAME);
+  Serial.println("I'm " + config.name);
 }
 
 void blink_loop() {
@@ -148,7 +152,7 @@ void blink_loop() {
 
 // Telegram Bot
 
-UniversalTelegramBot bot(TelegramBotToken, client);
+UniversalTelegramBot bot(config.token, client);
 
 int Bot_mtbs_ms = 3000;
 long Bot_nexttime = 0;
@@ -157,9 +161,11 @@ bool Bot_greeted = false;
 // General
 
 void send_message(String &chat_id, String &text) {
-  String msg = F("*" MY_NAME "*: ");
+  String msg = F("*");
+  msg += config.name;
+  msg += "*: ";
   
-  if (chat_id == "") chat_id = default_chat_id;
+  if (chat_id == "") chat_id = config.owner_id;
   
   msg += text;
   debug_log(msg);
@@ -173,14 +179,14 @@ bool is_for_me(telegramMessage &msg) {
   // if (0 == msg.reply_to_message_id) return false;
 
   // Only accept answers to my messages
-  return msg.reply_to_text.startsWith(MY_NAME ":");
+  return msg.reply_to_text.startsWith(config.name + ":");
 }
 
 // Greeter
 void cmd_start(String &chat_id) {
   String welcome = "Hola, your `chat_id` is " + chat_id;
 
-  default_chat_id = chat_id;
+  config.owner_id = chat_id;
   send_message(chat_id, welcome);
   cmd_status(chat_id);
 
@@ -202,7 +208,7 @@ void cmd_help(String &chat_id) {
 void cmd_status(String &chat_id) {
   String in_st  = input_status?"Ok":"ALARMA!";
   String rel_st = relay_state?"On":"Off";
-  String pol = polarity_inverted?"-":"+";
+  String pol = config.polarity_inverted?"-":"+";
   
   String msg = F("status: *");
   msg += in_st;
@@ -245,15 +251,18 @@ void cmd_keyboard(String &chat_id) {
      "{\"text\":\"roffon\",\"callback_data\":\"roffon\"}]"
      "]}"
   );
-  bot.sendMessageWithInlineKeyboard(chat_id, F("*" MY_NAME "*: use the keyboard"), "Markdown", keyboard); //, false, true, false);
+  String msg = F("*");
+  msg += config.name;
+  msg += F("*: use the keyboard");
+  bot.sendMessageWithInlineKeyboard(chat_id, msg, "Markdown", keyboard); //, false, true, false);
 }
 
 void cmd_polarity(telegramMessage &msg) {
-  polarity_inverted = !polarity_inverted;
+  config.polarity_inverted = !config.polarity_inverted;
   
   if (msg.query_id) {
     String answer = F("Polarity is now ");
-    answer += polarity_inverted?"-":"+";
+    answer += config.polarity_inverted?"-":"+";
     bot.answerCallbackQuery(msg.query_id, answer);
   } else {
     cmd_status(msg.chat_id);
@@ -376,8 +385,8 @@ void Bot_first_time() {
 
   bot.setMyCommands(commands);
   
-  if (default_chat_id != "") {
-    cmd_start(default_chat_id);
+  if (config.owner_id != "") {
+    cmd_start(config.owner_id);
   }
 }
 
@@ -405,7 +414,7 @@ void Bot_loop() {
 ///////////////////////
 
 bool input_read() {
-  return digitalRead(digitalInputPin) ^ polarity_inverted;
+  return digitalRead(digitalInputPin) ^ config.polarity_inverted;
 }
 
 void input_setup() {
@@ -419,7 +428,7 @@ void input_loop() {
   if (input_status != new_status) {
       input_status = new_status;
 #ifdef BOT_AND_WIFI
-      cmd_status(default_chat_id);
+      cmd_status(config.owner_id);
 #endif
   }
 }
@@ -428,7 +437,7 @@ void input_loop() {
 
 void OTA_setup() {
   ArduinoOTA.setPort(8266);
-  ArduinoOTA.setHostname(MY_NAME);
+  ArduinoOTA.setHostname(config.name.c_str());
   ArduinoOTA.setPasswordHash("fff9a16a632c7daa86f7a4a8ce1929d6");
   ArduinoOTA.onStart([]() {
     String type;
