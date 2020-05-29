@@ -8,10 +8,12 @@
 
 #include "git-version.h"
 #include <ESP8266WiFi.h>
-#include <UniversalTelegramBot.h>
+#include <FS.h>
 #include <ArduinoOTA.h>
 #include <ESP8266httpUpdate.h>
 #include <WiFiClientSecure.h>
+#include <ArduinoJson.h>
+#include <UniversalTelegramBot.h>
 #ifdef AUTOCONNECT
 #include <AutoConnect.h>
 AutoConnect portal;
@@ -39,6 +41,44 @@ public:
   String name = MY_NAME;
   String password =  MY_NAME "Password2020!";
   bool polarity_inverted = true;
+
+  Config() {
+    SPIFFS.begin();  
+  }
+  
+  void load() {
+    File configFile=SPIFFS.open("/botconfig.json","r");
+    if (configFile) {
+      StaticJsonDocument<512> doc;
+      DeserializationError error = deserializeJson(doc, configFile);
+      configFile.close();
+
+      if (error) {
+        Serial.println(F("Failed to read file, using default configuration"));
+      } else {
+        owner_id          = doc["owner_id"] | owner_id;
+        token             = doc["token"] | token;
+        name              = doc["name"] | name;
+        password          = doc["password"] | password;
+        polarity_inverted = doc["polarity_inverted"] | polarity_inverted;
+      }
+    }
+  }
+  void save() {
+    File configFile=SPIFFS.open("/botconfig.json","w");
+    if (configFile) {
+      StaticJsonDocument<512> doc;
+      doc["owner_id"] = owner_id;
+      doc["token"] = token;
+      doc["name"] = name;
+      doc["password"] = password;
+      doc["polarity_inverted"] = polarity_inverted;
+      if (serializeJson(doc, configFile) == 0) {
+        Serial.println(F("Failed to write to file"));
+      }
+      configFile.close();
+    }
+  }
 } config;
 
 // int digitalInputPin = 12;  // GPIO12 - NodemCU D6
@@ -259,6 +299,7 @@ void cmd_keyboard(String &chat_id) {
 
 void cmd_polarity(telegramMessage &msg) {
   config.polarity_inverted = !config.polarity_inverted;
+  config.save();
   
   if (msg.query_id) {
     String answer = F("Polarity is now ");
@@ -492,6 +533,7 @@ void relay_set(int value) {
 ///////////////////////
 
 void setup() {
+  config.load();
   blink_setup();
 #ifdef BOT_AND_WIFI
   WiFi_setup();
