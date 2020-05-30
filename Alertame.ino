@@ -49,7 +49,7 @@ public:
   void load() {
     File configFile=SPIFFS.open("/botconfig.json","r");
     if (configFile) {
-      StaticJsonDocument<512> doc;
+      StaticJsonDocument<256> doc;
       DeserializationError error = deserializeJson(doc, configFile);
       configFile.close();
 
@@ -67,7 +67,7 @@ public:
   void save() {
     File configFile=SPIFFS.open("/botconfig.json","w");
     if (configFile) {
-      StaticJsonDocument<512> doc;
+      StaticJsonDocument<256> doc;
       doc["owner_id"] = owner_id;
       doc["token"] = token;
       doc["name"] = name;
