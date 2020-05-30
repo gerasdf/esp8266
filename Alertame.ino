@@ -38,18 +38,24 @@ const char config_file_name[] = "/botconfig.json";
 
 class Config {
 public:
-  String owner_id = "25235518"; // gera;
-  String token = TELEGRAM_BOT_TOKEN;
-  String name = MY_NAME;
-  String password =  MY_NAME "Password2020!";
-  bool polarity_inverted = true;
+  String owner_id; // gera;
+  String token;
+  String name;
+  String password;
+  bool polarity_inverted;
 
-  Config() {
-    SPIFFS.begin();  
+  Config() : 
+    owner_id(F("25335518")),
+    token(F(TELEGRAM_BOT_TOKEN)),
+    name(F(MY_NAME)),
+    password(F(MY_NAME "Password2020!")),
+    polarity_inverted(true) 
+  {
+      SPIFFS.begin();
   }
   
   void load() {
-    File configFile=SPIFFS.open(config_file_name,"r");
+    File configFile=SPIFFS.open(config_file_name, "r");
     if (configFile) {
       StaticJsonDocument<256> doc;
       DeserializationError error = deserializeJson(doc, configFile);
