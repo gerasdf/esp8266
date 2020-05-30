@@ -34,6 +34,8 @@ int OTA_delay = 0;
 #define DPRINT(X)
 #endif 
 
+const char config_file_name[] = "/botconfig.json";
+
 class Config {
 public:
   String owner_id = "25235518"; // gera;
@@ -47,7 +49,7 @@ public:
   }
   
   void load() {
-    File configFile=SPIFFS.open("/botconfig.json","r");
+    File configFile=SPIFFS.open(config_file_name,"r");
     if (configFile) {
       StaticJsonDocument<256> doc;
       DeserializationError error = deserializeJson(doc, configFile);
@@ -65,7 +67,7 @@ public:
     }
   }
   void save() {
-    File configFile=SPIFFS.open("/botconfig.json","w");
+    File configFile=SPIFFS.open(config_file_name,"w");
     if (configFile) {
       StaticJsonDocument<256> doc;
       doc["owner_id"] = owner_id;
