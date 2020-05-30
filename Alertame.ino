@@ -130,7 +130,7 @@ void WiFi_setup() {
     Serial.println("connected:" + WiFi.SSID());
     Serial.println("IP:" + WiFi.localIP().toString());
   } else {
-    Serial.println("connection failed:");
+    Serial.println(F("connection failed:"));
   }
 #else // not AUTOCONNECT
   // Establecer el modo WiFi y desconectarse de un AP si fue Anteriormente conectada
@@ -160,7 +160,7 @@ void WiFi_loop() {
     }
 
     if (next_ok && !WiFi_ok) {
-      Serial.println("Connected!");
+      Serial.println(F("Connected!"));
     }
     WiFi_ok = next_ok;
     lastCheck = millis();
@@ -221,7 +221,7 @@ void send_message(String &chat_id, String &text) {
 }
 
 bool is_for_me(telegramMessage &msg) {
-  DPRINTLN(String("reply to: ") + msg.reply_to_message_id + " text: " + msg.reply_to_text);
+  DPRINTLN(String(F("reply to: ")) + msg.reply_to_message_id + F(" text: ") + msg.reply_to_text);
 
   // Only accept answers to other messages
   // if (0 == msg.reply_to_message_id) return false;
@@ -232,7 +232,8 @@ bool is_for_me(telegramMessage &msg) {
 
 // Greeter
 void cmd_start(String &chat_id) {
-  String welcome = "Hola, your `chat_id` is " + chat_id;
+  String welcome = F("Hola, your `chat_id` is ");
+  welcome += chat_id;
 
   config.owner_id = chat_id;
   send_message(chat_id, welcome);
@@ -340,9 +341,10 @@ void cmd_sent_file(int i) {
   DPRINTLN((String("Received document: ") + bot.messages[i].file_caption + " size: " + bot.messages[i].file_size));
   DPRINTLN((String("URL: ") + bot.messages[i].file_path));
   t_httpUpdate_return ret = ESPhttpUpdate.update(bot.messages[i].file_path);
+  #ifdef ALERT_DEBUG
   switch (ret) {
     case HTTP_UPDATE_FAILED:
-      Serial.printf("HTTP_UPDATE_FAILD Error (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+      Serial.printf_P(PSTR("HTTP_UPDATE_FAILD Error (%d): %s"), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
       break;
     case HTTP_UPDATE_NO_UPDATES:
       Serial.println("HTTP_UPDATE_NO_UPDATES");
@@ -351,6 +353,7 @@ void cmd_sent_file(int i) {
       Serial.println("HTTP_UPDATE_OK");
       break;
   }
+  #endif
 }
 
 void delay_next_poll() {
@@ -487,7 +490,7 @@ void input_loop() {
 void OTA_setup() {
   ArduinoOTA.setPort(8266);
   ArduinoOTA.setHostname(config.name.c_str());
-  ArduinoOTA.setPasswordHash("fff9a16a632c7daa86f7a4a8ce1929d6");
+  ArduinoOTA.setPasswordHash(String(F("fff9a16a632c7daa86f7a4a8ce1929d6")).c_str());
   ArduinoOTA.onStart([]() {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH) {
