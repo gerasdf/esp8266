@@ -23,7 +23,7 @@ int OTA_delay = 0;
 
 // All Configuration options
 
-#define MY_NAME            "Caldera2"
+#define MY_NAME            "AlertameDemo"
 #define TELEGRAM_BOT_TOKEN "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
 
 #ifdef ALERT_DEBUG
@@ -319,6 +319,16 @@ void cmd_polarity(telegramMessage &msg) {
   }
 }
 
+void cmd_setname(telegramMessage &msg) {
+  int first_space = msg.text.indexOf(' ');
+
+  if (-1 == first_space) return;
+
+  config.name = msg.text.substring(first_space+1);
+  config.save();
+  cmd_status(msg.chat_id);
+}
+
 void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
    relay_set(first_state);
    if (second_state != -1) {
@@ -397,6 +407,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "roffon") cmd_relay_set(msg, 0, 1);
       else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
       else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
+      else if (cmd.startsWith(F("setname"))) cmd_setname(msg);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
@@ -430,6 +441,7 @@ void Bot_first_time() {
     "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
+    "{\"command\":\"setname\",\"description\":\"changes the name of the device\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
     "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"}"
