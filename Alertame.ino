@@ -381,7 +381,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     cmd.toLowerCase();
     if (cmd[0] == '/') cmd.remove(0,1);
 
-    debug_log("Received \"" + cmd + "\" from " + msg.chat_id);
+    debug_log(String(F("Received \"")) + cmd + F("\" from ") + msg.chat_id);
 
     // Global messages (acceptable for all devices at the same time, without any filtering)
     if (cmd == "start") {
