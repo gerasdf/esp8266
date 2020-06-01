@@ -23,7 +23,7 @@ int OTA_delay = 0;
 
 // All Configuration options
 
-#define MY_NAME            "ToI #0"
+#define MY_NAME            "ToI "
 #define TELEGRAM_BOT_TOKEN "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
 
 #ifdef ALERT_DEBUG
@@ -47,7 +47,7 @@ public:
   Config() : 
     owner_id(F("25235518")),
     token(F(TELEGRAM_BOT_TOKEN)),
-    name(F(MY_NAME)),
+    name(String(F(MY_NAME)) + String(ESP.getChipId(), HEX)),
     password(F(MY_NAME "Password2020!")),
     polarity_inverted(true) 
   {
@@ -264,11 +264,8 @@ void cmd_status(String &chat_id) {
 }
 
 void cmd_sysinfo(String &chat_id) {
-  char chipId[9];
-  sprintf(chipId, "%08x", ESP.getChipId());
-  
   String msg = F("\nIP: *");    msg += WiFi.localIP().toString();
-  msg += F("*\nChipID: *");     msg += chipId;
+  msg += F("*\nChipID: *");     msg += String(ESP.getChipId(), HEX);
   msg += F("*\nESSID: *");      msg += WiFi.SSID();
   msg += F("*\nBSSID: *");      msg += WiFi.BSSIDstr();
   msg += F("*\nSignal: *");     msg += WiFi.RSSI();
