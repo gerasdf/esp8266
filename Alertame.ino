@@ -23,7 +23,7 @@ int OTA_delay = 0;
 
 // All Configuration options
 
-#define MY_NAME            "AlertameDemo"
+#define MY_NAME            "ToI #0"
 #define TELEGRAM_BOT_TOKEN "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
 
 #ifdef ALERT_DEBUG
@@ -272,17 +272,16 @@ void cmd_status(String &chat_id) {
 }
 
 void cmd_sysinfo(String &chat_id) {
-
-  String msg = F("\nIP: *");
-  msg += WiFi.localIP().toString();
-  msg += F("*\nESSID: *");
-  msg += WiFi.SSID();
-  msg += F("*\nSignal: *");
-  msg += WiFi.RSSI();
-  msg += F(" dBm*\nRAM: *");
-  msg += ESP.getFreeHeap();
-  msg += F("*\nuptime: *");
-  msg += millis()/1000;
+  char chipId[9];
+  sprintf(chipId, "%08x", ESP.getChipId());
+  
+  String msg = F("\nIP: *");    msg += WiFi.localIP().toString();
+  msg += F("*\nChipID: *");     msg += chipId;
+  msg += F("*\nESSID: *");      msg += WiFi.SSID();
+  msg += F("*\nBSSID: *");      msg += WiFi.BSSIDstr();
+  msg += F("*\nSignal: *");     msg += WiFi.RSSI();
+  msg += F(" dBm*\nRAM: *");    msg += ESP.getFreeHeap();
+  msg += F("*\nuptime: *");     msg += millis()/1000;
   msg += F("*\nversion: *" GIT_VERSION "*");
   // msg += F("*");
   
