@@ -38,14 +38,14 @@ const char config_file_name[] = "/botconfig.json";
 
 class Config {
 public:
-  String owner_id; // gera;
+  String owner_id;
   String token;
   String name;
   String password;
   bool polarity_inverted;
 
   Config() : 
-    owner_id(F("25335518")),
+    owner_id(F("25235518")),
     token(F(TELEGRAM_BOT_TOKEN)),
     name(F(MY_NAME)),
     password(F(MY_NAME "Password2020!")),
@@ -224,8 +224,8 @@ void send_message(String &chat_id, String &text) {
 bool is_for_me(telegramMessage &msg) {
   DPRINTLN(String(F("reply to: ")) + msg.reply_to_message_id + F(" text: ") + msg.reply_to_text);
 
-  // Only accept answers to other messages
-  // if (0 == msg.reply_to_message_id) return false;
+  // Only accept messages from the owner
+  if (msg.chat_id != config.owner_id) return false;
 
   // Only accept answers to my messages
   return msg.reply_to_text.startsWith(config.name + ":");
