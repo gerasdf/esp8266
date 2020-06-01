@@ -239,14 +239,6 @@ void cmd_start(String &chat_id) {
   config.owner_id = chat_id;
   send_message(chat_id, welcome);
   cmd_status(chat_id);
-
-  /*
-  DynamicJsonDocument doc(200);
-  deserializeJson(doc, "}{\"ok\":true, \"nok\":false}");
-
-  send_message(chat_id, String("ok: ")    + (bool)doc["ok"] +           " nok: "  + (bool)doc["mok"] +
-                 " mokt: " + (bool)(doc["mok"] | true) + " mokf: " + (bool)(doc["mok"] | false)); 
-  */
 }
 
 void cmd_help(String &chat_id) {
