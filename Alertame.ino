@@ -236,7 +236,7 @@ void cmd_start(String &chat_id) {
   String welcome = F("Hola, your `chat_id` is ");
   welcome += chat_id;
 
-  config.owner_id = chat_id;
+  // config.owner_id = chat_id;
   send_message(chat_id, welcome);
   cmd_status(chat_id);
 }
@@ -420,7 +420,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       message_for_other_device = true;
     }
     
-    // Device commands (only acceptable if directed to a particular device)
+    // Device commands (only acceptable if directed to a particular device and from the owner)
     else if (is_for_me(msg)) {
       if      (cmd == "status") cmd_status(msg.chat_id);
       else if (cmd == "polarity") cmd_polarity(msg);
@@ -476,9 +476,7 @@ void Bot_first_time() {
 
   bot.setMyCommands(commands);
   
-  if (config.owner_id != "") {
-    cmd_start(config.owner_id);
-  }
+  cmd_start(config.owner_id);
 }
 
 void Bot_loop() {
