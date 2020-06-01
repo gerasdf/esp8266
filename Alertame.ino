@@ -332,6 +332,19 @@ void cmd_setname(telegramMessage &msg) {
   cmd_status(msg.chat_id);
 }
 
+void cmd_setowner(telegramMessage &msg) {
+  int first_space = msg.text.indexOf(' ');
+
+  if (-1 == first_space) return;
+
+  const String &new_owner_id = msg.text.substring(first_space+1);
+  if (new_owner_id.length() <= 3) return;
+
+  config.owner_id = new_owner_id;
+  config.save();
+  cmd_status(msg.chat_id);
+}
+
 void cmd_settoken(telegramMessage &msg) {
   int first_space = msg.text.indexOf(' ');
 
@@ -426,6 +439,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
       else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
       else if (cmd.startsWith(F("setname"))) cmd_setname(msg);
+      else if (cmd.startsWith(F("setowner"))) cmd_setowner(msg);
       else if (cmd.startsWith(F("settoken"))) cmd_settoken(msg);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
@@ -460,8 +474,9 @@ void Bot_first_time() {
     "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
-    "{\"command\":\"setname\",\"description\":\"changes device's\"},"
-    "{\"command\":\"settoken\",\"description\":\"changes device's bot token. Use with care\"},"
+    "{\"command\":\"setname\",\"description\":\"changes device's name\"},"
+    "{\"command\":\"setowner\",\"description\":\"changes device's owner id. *dangerous*\"},"
+    "{\"command\":\"settoken\",\"description\":\"changes device's bot token. *dangerous*\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
     "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"}"
