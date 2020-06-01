@@ -591,6 +591,7 @@ void relay_set(int value) {
 ///////////////////////
 
 void setup() {
+  // config.save(); // Uncomment to reset to default config
   config.load();
   bot.updateToken(config.token);
   blink_setup();
