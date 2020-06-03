@@ -126,12 +126,19 @@ void WiFi_setup() {
 #ifdef AUTOCONNECT
   AutoConnectConfig portalConfig(config.name.c_str(), config.password.c_str());
   portalConfig.ota = AC_OTA_BUILTIN;
+  portalConfig.autoReconnect = true;
+  portalConfig.portalTimeout = 2*60*1000; // ms
   portal.config(portalConfig);
   if (portal.begin()) {
     Serial.println("connected:" + WiFi.SSID());
     Serial.println("IP:" + WiFi.localIP().toString());
   } else {
-    Serial.println(F("connection failed:"));
+    Serial.println(F("connection failed. Trying stored credentials"));
+    WiFi.setAutoConnect(true);
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
+    WiFi.begin();
   }
 #else // not AUTOCONNECT
   // Establecer el modo WiFi y desconectarse de un AP si fue Anteriormente conectada
@@ -149,7 +156,8 @@ void WiFi_setup() {
 void WiFi_loop() {
 #ifdef AUTOCONNECT
   portal.handleClient();
-#else // not AUTOCONNECT
+#endif // not AUTOCONNECT
+
   static long lastCheck = 0;
   bool next_ok;
 
@@ -166,7 +174,6 @@ void WiFi_loop() {
     WiFi_ok = next_ok;
     lastCheck = millis();
   }
-#endif // AUTOCONNECT
 }
 
 // Blinker
