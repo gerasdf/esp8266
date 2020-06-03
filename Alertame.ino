@@ -23,7 +23,7 @@ int OTA_delay = 0;
 
 // All Configuration options
 
-#define MY_NAME            "AlertameDemo"
+#define MY_NAME            "ToI "
 #define TELEGRAM_BOT_TOKEN "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
 
 #ifdef ALERT_DEBUG
@@ -38,16 +38,16 @@ const char config_file_name[] = "/botconfig.json";
 
 class Config {
 public:
-  String owner_id; // gera;
+  String owner_id;
   String token;
   String name;
   String password;
   bool polarity_inverted;
 
   Config() : 
-    owner_id(F("25335518")),
+    owner_id(F("25235518")),
     token(F(TELEGRAM_BOT_TOKEN)),
-    name(F(MY_NAME)),
+    name(String(F(MY_NAME)) + String(ESP.getChipId(), HEX)),
     password(F(MY_NAME "Password2020!")),
     polarity_inverted(true) 
   {
@@ -224,8 +224,8 @@ void send_message(String &chat_id, String &text) {
 bool is_for_me(telegramMessage &msg) {
   DPRINTLN(String(F("reply to: ")) + msg.reply_to_message_id + F(" text: ") + msg.reply_to_text);
 
-  // Only accept answers to other messages
-  // if (0 == msg.reply_to_message_id) return false;
+  // Only accept messages from the owner
+  if (msg.chat_id != config.owner_id) return false;
 
   // Only accept answers to my messages
   return msg.reply_to_text.startsWith(config.name + ":");
@@ -236,17 +236,9 @@ void cmd_start(String &chat_id) {
   String welcome = F("Hola, your `chat_id` is ");
   welcome += chat_id;
 
-  config.owner_id = chat_id;
+  // config.owner_id = chat_id;
   send_message(chat_id, welcome);
   cmd_status(chat_id);
-
-  /*
-  DynamicJsonDocument doc(200);
-  deserializeJson(doc, "}{\"ok\":true, \"nok\":false}");
-
-  send_message(chat_id, String("ok: ")    + (bool)doc["ok"] +           " nok: "  + (bool)doc["mok"] +
-                 " mokt: " + (bool)(doc["mok"] | true) + " mokf: " + (bool)(doc["mok"] | false)); 
-  */
 }
 
 void cmd_help(String &chat_id) {
@@ -272,17 +264,13 @@ void cmd_status(String &chat_id) {
 }
 
 void cmd_sysinfo(String &chat_id) {
-
-  String msg = F("\nIP: *");
-  msg += WiFi.localIP().toString();
-  msg += F("*\nESSID: *");
-  msg += WiFi.SSID();
-  msg += F("*\nSignal: *");
-  msg += WiFi.RSSI();
-  msg += F(" dBm*\nRAM: *");
-  msg += ESP.getFreeHeap();
-  msg += F("*\nuptime: *");
-  msg += millis()/1000;
+  String msg = F("\nIP: *");    msg += WiFi.localIP().toString();
+  msg += F("*\nChipID: *");     msg += String(ESP.getChipId(), HEX);
+  msg += F("*\nESSID: *");      msg += WiFi.SSID();
+  msg += F("*\nBSSID: *");      msg += WiFi.BSSIDstr();
+  msg += F("*\nSignal: *");     msg += WiFi.RSSI();
+  msg += F(" dBm*\nRAM: *");    msg += ESP.getFreeHeap();
+  msg += F("*\nuptime: *");     msg += millis()/1000;
   msg += F("*\nversion: *" GIT_VERSION "*");
   // msg += F("*");
   
@@ -329,6 +317,19 @@ void cmd_setname(telegramMessage &msg) {
   if (new_name.length() <= 3) return;
 
   config.name = new_name;
+  config.save();
+  cmd_status(msg.chat_id);
+}
+
+void cmd_setowner(telegramMessage &msg) {
+  int first_space = msg.text.indexOf(' ');
+
+  if (-1 == first_space) return;
+
+  const String &new_owner_id = msg.text.substring(first_space+1);
+  if (new_owner_id.length() <= 3) return;
+
+  config.owner_id = new_owner_id;
   config.save();
   cmd_status(msg.chat_id);
 }
@@ -416,7 +417,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       message_for_other_device = true;
     }
     
-    // Device commands (only acceptable if directed to a particular device)
+    // Device commands (only acceptable if directed to a particular device and from the owner)
     else if (is_for_me(msg)) {
       if      (cmd == "status") cmd_status(msg.chat_id);
       else if (cmd == "polarity") cmd_polarity(msg);
@@ -427,6 +428,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
       else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
       else if (cmd.startsWith(F("setname"))) cmd_setname(msg);
+      else if (cmd.startsWith(F("setowner"))) cmd_setowner(msg);
       else if (cmd.startsWith(F("settoken"))) cmd_settoken(msg);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
@@ -461,8 +463,9 @@ void Bot_first_time() {
     "{\"command\":\"ron\",\"description\":\"turn relay on\"},"
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
-    "{\"command\":\"setname\",\"description\":\"changes device's\"},"
-    "{\"command\":\"settoken\",\"description\":\"changes device's bot token. Use with care\"},"
+    "{\"command\":\"setname\",\"description\":\"changes device's name\"},"
+    "{\"command\":\"setowner\",\"description\":\"changes device's owner id. *dangerous*\"},"
+    "{\"command\":\"settoken\",\"description\":\"changes device's bot token. *dangerous*\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
     "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"}"
@@ -470,9 +473,7 @@ void Bot_first_time() {
 
   bot.setMyCommands(commands);
   
-  if (config.owner_id != "") {
-    cmd_start(config.owner_id);
-  }
+  cmd_start(config.owner_id);
 }
 
 void Bot_loop() {
@@ -577,6 +578,7 @@ void relay_set(int value) {
 ///////////////////////
 
 void setup() {
+  // config.save(); // Uncomment to reset to default config
   config.load();
   bot.updateToken(config.token);
   blink_setup();
