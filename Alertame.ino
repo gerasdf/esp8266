@@ -211,7 +211,7 @@ void blink_loop() {
 UniversalTelegramBot bot(config.token, client);
 
 int Bot_mtbs_ms = 3000;
-long Bot_nexttime = 0;
+unsigned long Bot_nexttime = 0;
 bool Bot_greeted = false;
 
 // General
