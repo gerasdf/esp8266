@@ -278,6 +278,7 @@ void cmd_sysinfo(String &chat_id) {
   msg += F("*\nSignal: *");     msg += WiFi.RSSI();
   msg += F(" dBm*\nRAM: *");    msg += ESP.getFreeHeap();
   msg += F("*\nuptime: *");     msg += millis()/1000;
+  msg += F("*\nowner: *");      msg += config.owner_id;
   msg += F("*\nversion: *" GIT_VERSION "*");
   // msg += F("*");
   
@@ -338,7 +339,8 @@ void cmd_setowner(telegramMessage &msg) {
 
   config.owner_id = new_owner_id;
   config.save();
-  cmd_status(msg.chat_id);
+  send_message(msg.chat_id, String(F("Transferred ownership to ")) + new_owner_id);
+  cmd_status(config.owner_id);
 }
 
 void cmd_settoken(telegramMessage &msg) {
