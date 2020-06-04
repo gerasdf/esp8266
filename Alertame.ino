@@ -129,17 +129,14 @@ void WiFi_setup() {
   portalConfig.autoReconnect = true;
   portalConfig.portalTimeout = 2*60*1000; // ms
   portal.config(portalConfig);
-  if (portal.begin()) {
-    Serial.println("connected:" + WiFi.SSID());
-    Serial.println("IP:" + WiFi.localIP().toString());
-  } else {
-    Serial.println(F("connection failed. Trying stored credentials"));
-    WiFi.setAutoConnect(true);
-    WiFi.mode(WIFI_STA);
-    WiFi.disconnect();
-    delay(100);
-    WiFi.begin();
-  }
+  do {
+    if (portal.begin()) {
+      Serial.println("connected:" + WiFi.SSID());
+      Serial.println("IP:" + WiFi.localIP().toString());
+    } else {
+      Serial.println(F("connection failed. Trying again"));
+    }
+  } while (WiFi.status() != WL_CONNECTED);
 #else // not AUTOCONNECT
   // Establecer el modo WiFi y desconectarse de un AP si fue Anteriormente conectada
   WiFi.mode(WIFI_STA);
@@ -149,7 +146,7 @@ void WiFi_setup() {
   Serial.println(WiFi_ssid);
   WiFi.begin(WiFi_ssid, WiFi_key);
 #endif // AUTOCONNECT
-
+  WiFi.setAutoReconnect(true);
   WiFi_ok = WiFi.status() == WL_CONNECTED;
 }
 
