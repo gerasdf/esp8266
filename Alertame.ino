@@ -367,7 +367,6 @@ void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
      if (second_state != -1)
        answer += second_state?F(" then On"):F(" then Off");
      bot.answerCallbackQuery(msg.query_id, answer);
-     DPRINTLN("Query id:" + msg.query_id);
    } else {
      cmd_status(msg.chat_id);
    }
