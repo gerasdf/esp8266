@@ -344,10 +344,16 @@ void cmd_setowner(telegramMessage &msg) {
   const String &new_owner_id = msg.text.substring(first_space+1);
   if (new_owner_id.length() <= 3) return;
 
+  String granted_msg = String(F("Transferred ownership to ")) + new_owner_id;
+
+  if (msg.query_id) {
+    bot.answerCallbackQuery(msg.query_id, granted_msg);
+  }
+  send_message(config.owner_id, granted_msg);
+
   config.owner_id = new_owner_id;
   config.save();
-  send_message(msg.chat_id, String(F("Transferred ownership to ")) + new_owner_id);
-  cmd_status(config.owner_id);
+  cmd_start(config.owner_id);
 }
 
 void cmd_settoken(telegramMessage &msg) {
