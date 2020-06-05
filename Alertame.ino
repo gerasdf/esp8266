@@ -401,6 +401,22 @@ void cmd_sent_file(int i) {
   #endif
 }
 
+void cmd_own(telegramMessage &msg) {
+  String keyboard = String(F("[["
+     "{\"text\":\"grant\",\"callback_data\":\"setowner ")) + msg.chat_id + F("\"}"
+     // ",{\"text\":\"deny\",\"callback_data\":\"denyown ")) + msg.chat_id + F("\"}"
+     "]]}"
+  );
+  String answer = F("*");
+  answer += config.name;
+  answer += F("*: User ");
+  answer += msg.chat_id;
+  answer += F(" (");
+  answer += msg.from_name;
+  answer += F(") is asking ownership");
+  bot.sendMessageWithInlineKeyboard(config.owner_id, answer, "Markdown", keyboard); //, false, true, false);
+}
+
 void delay_next_poll() {
   Bot_nexttime += Bot_mtbs_ms;
 }
@@ -430,6 +446,9 @@ void Bot_handleNewMessages(int numNewMessages) {
     else if (is_from_owner(msg) && (cmd == "start")) {
       cmd_start(msg.chat_id);
       message_for_other_device = true;
+    }
+    else if (is_for_me(msg) && (cmd == "own")) {
+      cmd_own(msg);
     }
     // Device commands (only acceptable if directed to a particular device and from the owner)
     else if (is_for_me(msg) && is_from_owner(msg)) {
@@ -471,6 +490,7 @@ void Bot_first_time() {
     "{\"command\":\"allsysinfo\",\"description\":\"answer all devices system info\"},"
     "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
     "{\"command\":\"keyboard\",  \"description\":\"display keyboard\"},"
+    "{\"command\":\"own\",  \"description\":\"request device ownership\"},"
     "{\"command\":\"polarity\",\"description\":\"changes input polarity\"},"
     "{\"command\":\"reset\", \"description\":\"reset device\"},"
     "{\"command\":\"roff\",\"description\":\"turn relay off\"},"
@@ -478,7 +498,7 @@ void Bot_first_time() {
     "{\"command\":\"roffon\",\"description\":\"turn relay off then on\"},"
     "{\"command\":\"ronoff\",\"description\":\"turn relay on then off\"},"
     "{\"command\":\"setname\",\"description\":\"changes device's name\"},"
-    "{\"command\":\"setowner\",\"description\":\"changes device's owner id. *dangerous*\"},"
+    // "{\"command\":\"setowner\",\"description\":\"changes device's owner id. *dangerous*\"}," // private command
     "{\"command\":\"settoken\",\"description\":\"changes device's bot token. *dangerous*\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
