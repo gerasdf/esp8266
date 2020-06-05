@@ -105,10 +105,13 @@ void relay_set(int value);
 void cmd_status(String &chat_id);
 void Bot_first_time();
 
-bool WiFi_ok = false;
-
 bool input_status;
 int relay_state;
+
+#define WIFI_RECHECK_ms           1000
+#define NO_WIFI_THEN_RESET_ms     1000*10*60
+
+bool WiFi_ok = false;
 
 WiFiClientSecure client;
 
@@ -156,9 +159,10 @@ void WiFi_loop() {
 #endif // not AUTOCONNECT
 
   static long lastCheck = 0;
+  static long lastOk    = millis();
   bool next_ok;
 
-  if (millis() - lastCheck > 1000) {
+  if (millis() - lastCheck > WIFI_RECHECK_ms) {
     next_ok = WiFi.status() == WL_CONNECTED;
 
     if (!next_ok) {
@@ -170,6 +174,14 @@ void WiFi_loop() {
     }
     WiFi_ok = next_ok;
     lastCheck = millis();
+  }
+  
+  if (WiFi_ok) {
+    lastOk = millis();
+  } else {
+    if (millis() - lastOk > NO_WIFI_THEN_RESET_ms) {
+      ESP.reset();
+    }
   }
 }
 
