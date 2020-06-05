@@ -180,6 +180,7 @@ void WiFi_loop() {
     lastOk = millis();
   } else {
     if (millis() - lastOk > NO_WIFI_THEN_RESET_ms) {
+      DPRINTLN(F("WiFi timed out. I'll be back"));
       ESP.reset();
     }
   }
