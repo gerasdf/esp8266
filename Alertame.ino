@@ -109,7 +109,7 @@ bool input_status;
 int relay_state;
 
 #define WIFI_RECHECK_ms           1000
-#define NO_WIFI_THEN_RESET_ms     1000*10*60
+#define NO_WIFI_THEN_RESET_ms     1000*30*60
 
 bool WiFi_ok = false;
 
