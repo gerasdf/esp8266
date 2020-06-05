@@ -467,9 +467,9 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "roffon") cmd_relay_set(msg, 0, 1);
       else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
       else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
-      else if (cmd.startsWith(F("setname"))) cmd_setname(msg);
-      else if (cmd.startsWith(F("setowner"))) cmd_setowner(msg);
-      else if (cmd.startsWith(F("settoken"))) cmd_settoken(msg);
+      else if (cmd.startsWith(F("setname "))) cmd_setname(msg);
+      else if (cmd.startsWith(F("setowner "))) cmd_setowner(msg);
+      else if (cmd.startsWith(F("settoken "))) cmd_settoken(msg);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
