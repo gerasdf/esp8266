@@ -294,15 +294,15 @@ void cmd_sysinfo(String &chat_id) {
 }
 
 void cmd_keyboard(String &chat_id) {
-  String keyboard = F("["
-     "[{\"text\":\"sysinfo\",\"callback_data\":\"sysinfo\"},"
+  String keyboard = F("[["
+     "{\"text\":\"sysinfo\",\"callback_data\":\"sysinfo\"},"
      "{\"text\":\"status\",\"callback_data\":\"status\"},"
      "{\"text\":\"polarity\",\"callback_data\":\"polarity\"}],"
      "[{\"text\":\"ron\",\"callback_data\":\"ron\"},"
      "{\"text\":\"roff\",\"callback_data\":\"roff\"}],"
      "[{\"text\":\"ronoff\",\"callback_data\":\"ronoff\"},"
-     "{\"text\":\"roffon\",\"callback_data\":\"roffon\"}]"
-     "]}"
+     "{\"text\":\"roffon\",\"callback_data\":\"roffon\"}"
+     "]]}"
   );
   String msg = F("*");
   msg += config.name;
