@@ -237,13 +237,11 @@ void send_message(String &chat_id, String &text) {
   bot.sendMessage(chat_id, msg, "Markdown");
 }
 
+bool is_from_owner(telegramMessage &msg) {
+  return (msg.chat_id == config.owner_id);
+}
+
 bool is_for_me(telegramMessage &msg) {
-  DPRINTLN(String(F("reply to: ")) + msg.reply_to_message_id + F(" text: ") + msg.reply_to_text);
-
-  // Only accept messages from the owner
-  if (msg.chat_id != config.owner_id) return false;
-
-  // Only accept answers to my messages
   return msg.reply_to_text.startsWith(config.name + ":");
 }
 
@@ -435,7 +433,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     }
     
     // Device commands (only acceptable if directed to a particular device and from the owner)
-    else if (is_for_me(msg)) {
+    else if (is_for_me(msg) && is_from_owner(msg)) {
       if      (cmd == "status") cmd_status(msg.chat_id);
       else if (cmd == "polarity") cmd_polarity(msg);
       else if (cmd == "ron") cmd_relay_set(msg, 1, -1);
