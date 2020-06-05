@@ -419,11 +419,7 @@ void Bot_handleNewMessages(int numNewMessages) {
     debug_log(String(F("Received \"")) + cmd + F("\" from ") + msg.chat_id);
 
     // Global messages (acceptable for all devices at the same time, without any filtering)
-    if (cmd == "start") {
-      cmd_start(msg.chat_id);
-      message_for_other_device = true;
-    }
-    else if (cmd == "allstatus") {
+    if (cmd == "allstatus") {
       cmd_status(msg.chat_id);
       message_for_other_device = true;
     }
@@ -431,7 +427,10 @@ void Bot_handleNewMessages(int numNewMessages) {
       cmd_sysinfo(msg.chat_id);
       message_for_other_device = true;
     }
-    
+    else if (is_from_owner(msg) && (cmd == "start")) {
+      cmd_start(msg.chat_id);
+      message_for_other_device = true;
+    }
     // Device commands (only acceptable if directed to a particular device and from the owner)
     else if (is_for_me(msg) && is_from_owner(msg)) {
       if      (cmd == "status") cmd_status(msg.chat_id);
