@@ -331,10 +331,11 @@ void cmd_keyboard(String &chat_id) {
 }
 
 void cmd_polarity(telegramMessage &msg) {
-  String answer = F("Polarity is now ");
-  answer += config.polarity_inverted?"-":"+";
   config.polarity_inverted = !config.polarity_inverted;
   config.save();
+
+  String answer = F("Polarity is now ");
+  answer += config.polarity_inverted?"-":"+";
 
   send_message_or_answer(msg.chat_id, msg.query_id, answer);
 }
