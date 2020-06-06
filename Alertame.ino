@@ -226,21 +226,23 @@ bool Bot_greeted = false;
 
 // General
 
-void send_message_and_answer(const String &chat_id, const String &query_id, const String &text) {
+void send_message_or_answer(const String &chat_id, const String &query_id, const String &text) {
   String msg = F("*");
   msg += config.name;
   msg += "*: ";
     
   msg += text;
   debug_log(msg);
-
-  if (chat_id) bot.sendMessage(chat_id, msg, "Markdown");
-  if (query_id) bot.answerCallbackQuery(query_id, msg);
+  if (query_id) {
+    bot.answerCallbackQuery(query_id, msg);
+  } else {
+    bot.sendMessage(chat_id, msg, "Markdown");
+  }
 }
 
 void send_message(String &chat_id, const String &text) {
   if (chat_id == "") chat_id = config.owner_id;
-  send_message_and_answer(chat_id, F(""), text);
+  send_message_or_answer(chat_id, F(""), text);
 }
 
 void clean_last_message() {
@@ -329,16 +331,12 @@ void cmd_keyboard(String &chat_id) {
 }
 
 void cmd_polarity(telegramMessage &msg) {
+  String answer = F("Polarity is now ");
+  answer += config.polarity_inverted?"-":"+";
   config.polarity_inverted = !config.polarity_inverted;
   config.save();
-  
-  if (msg.query_id) {
-    String answer = F("Polarity is now ");
-    answer += config.polarity_inverted?"-":"+";
-    bot.answerCallbackQuery(msg.query_id, answer);
-  } else {
-    cmd_status(msg.chat_id);
-  }
+
+  send_message_or_answer(msg.chat_id, msg.query_id, answer);
 }
 
 void cmd_setname(telegramMessage &msg) {
