@@ -396,7 +396,6 @@ void cmd_settoken(telegramMessage &msg) {
 }
 
 void cmd_confirmtoken(telegramMessage &msg) {
-  String answer_msg;
   int first_space = msg.text.indexOf(' ');
 
   if (-1 == first_space) return;
@@ -408,14 +407,12 @@ void cmd_confirmtoken(telegramMessage &msg) {
     config.token = new_token;
     config.save();
     if (msg.query_id) {
-      bot.answerCallbackQuery(msg.query_id, answer_msg);
+      bot.answerCallbackQuery(msg.query_id, F("New Bot token confirmed"));
     }
     cmd_start(msg.chat_id);
-    answer_msg = F("New Bot token confirmed");
   } else if (new_token == config.token) {
-    answer_msg = F("New Bot token rejected");
     if (msg.query_id) {
-      bot.answerCallbackQuery(msg.query_id, answer_msg);
+      bot.answerCallbackQuery(msg.query_id, F("New Bot token rejected"));
     }
     clean_last_message();
     bot.updateToken(config.token);
