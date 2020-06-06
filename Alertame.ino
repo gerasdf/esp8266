@@ -366,9 +366,21 @@ void cmd_settoken(telegramMessage &msg) {
   if (new_token.length() <= 3) return;
 
   bot.updateToken(new_token);
-  cmd_status(msg.chat_id);
 
-  // send keyboard to confirm token
+  String keyboard = String(F("[["
+     "{\"text\":\"confirm\",\"callback_data\":\"confirmtoken ")) + new_token + F("\"}"
+     ",{\"text\":\"deny\",\"callback_data\":\"confirmtoken ") + config.token + F("\"}"
+     "]]}"
+  );
+  String answer = F("*");
+  answer += config.name;
+  answer += F("*: User ");
+  answer += msg.chat_id;
+  answer += F(" (");
+  answer += msg.from_name;
+  answer += F(") is asking to connect the device to this Bot");
+
+  bot.sendMessageWithInlineKeyboard(config.owner_id, answer, "Markdown", keyboard); //, false, true, false);
   // save old token and start timeout to revert token
 }
 
