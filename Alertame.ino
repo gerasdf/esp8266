@@ -233,7 +233,7 @@ void send_message_or_answer(const String &chat_id, const String &query_id, const
     
   msg += text;
   debug_log(msg);
-  if (query_id) {
+  if (!query_id.isEmpty()) {
     bot.answerCallbackQuery(query_id, msg);
   } else {
     bot.sendMessage(chat_id, msg, "Markdown");
