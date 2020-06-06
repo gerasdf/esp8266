@@ -238,6 +238,10 @@ void send_message(String &chat_id, String &text) {
   bot.sendMessage(chat_id, msg, "Markdown");
 }
 
+void clean_last_message() {
+  bot.getUpdates(bot.last_message_received + 1);
+}
+
 bool is_from_owner(telegramMessage &msg) {
   return (msg.chat_id == config.owner_id);
 }
@@ -365,6 +369,7 @@ void cmd_settoken(telegramMessage &msg) {
   const String new_token = msg.text.substring(first_space+1);
   if (new_token.length() <= 3) return;
 
+  clean_last_message();
   bot.updateToken(new_token);
 
   String keyboard = String(F("[["
