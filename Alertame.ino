@@ -402,14 +402,10 @@ void cmd_confirmtoken(telegramMessage &msg) {
   if (new_token == bot.getToken()) {
     config.token = new_token;
     config.save();
-    if (msg.query_id) {
-      bot.answerCallbackQuery(msg.query_id, F("New Bot token confirmed"));
-    }
-    cmd_start(msg.chat_id);
+    send_message_or_answer(msg.chat_id, msg.query_id, F("New Bot token confirmed"));
+    cmd_status(msg.chat_id);
   } else if (new_token == config.token) {
-    if (msg.query_id) {
-      bot.answerCallbackQuery(msg.query_id, F("New Bot token rejected"));
-    }
+    send_message_or_answer(msg.chat_id, msg.query_id, F("New Bot token rejected"));
     clean_last_message();
     bot.updateToken(config.token);
     send_message(msg.chat_id, String(F("New Bot token was rejected by ")) + msg.from_name);
@@ -424,15 +420,12 @@ void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
      delay(1000);
      relay_set(second_state);
    }
-   if (msg.query_id) {
-     String answer = F("Relay turned ");
-     answer += first_state?"On":"Off";
-     if (second_state != -1)
-       answer += second_state?F(" then On"):F(" then Off");
-     bot.answerCallbackQuery(msg.query_id, answer);
-   } else {
-     cmd_status(msg.chat_id);
-   }
+   
+   String answer = F("Relay turned ");
+   answer += first_state?"On":"Off";
+   if (second_state != -1)
+     answer += second_state?F(" then On"):F(" then Off");
+   send_message_or_answer(msg.chat_id, msg.query_id, answer);
 }
 
 void cmd_sent_file(int i) {
