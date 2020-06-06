@@ -227,16 +227,11 @@ bool Bot_greeted = false;
 // General
 
 void send_message_or_answer(const String &chat_id, const String &query_id, const String &text) {
-  String msg = F("*");
-  msg += config.name;
-  msg += "*: ";
-    
-  msg += text;
-  debug_log(msg);
+  debug_log("-> " + text);
   if (!query_id.isEmpty()) {
-    bot.answerCallbackQuery(query_id, msg);
+    bot.answerCallbackQuery(query_id, text);
   } else {
-    bot.sendMessage(chat_id, msg, "Markdown");
+    bot.sendMessage(chat_id, "*" + config.name + "*: " + text, "Markdown");
   }
 }
 
