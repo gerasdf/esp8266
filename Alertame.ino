@@ -365,11 +365,28 @@ void cmd_settoken(telegramMessage &msg) {
   const String new_token = msg.text.substring(first_space+1);
   if (new_token.length() <= 3) return;
 
-  config.token = new_token; 
-  bot.updateToken(config.token);
-  config.save();
-  Bot_first_time();
+  bot.updateToken(new_token);
   cmd_status(msg.chat_id);
+
+  // send keyboard to confirm token
+  // save old token and start timeout to revert token
+}
+
+void cmd_confirmtoken(telegramMessage &msg) {
+  int first_space = msg.text.indexOf(' ');
+
+  if (-1 == first_space) return;
+
+  const String new_token = msg.text.substring(first_space+1);
+  if (new_token.length() <= 3) return;
+
+  if (new_token == bot.getToken()) {
+    config.token = new_token;
+    config.save();
+    cmd_status(msg.chat_id);
+  } else {
+    DPRINTLN(("Received /confirmtoken for " + new_token + " and current token is " + bot.getToken()));
+  }
 }
 
 void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
@@ -470,6 +487,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd.startsWith(F("setname "))) cmd_setname(msg);
       else if (cmd.startsWith(F("setowner "))) cmd_setowner(msg);
       else if (cmd.startsWith(F("settoken "))) cmd_settoken(msg);
+      else if (cmd.startsWith(F("confirmtoken "))) cmd_confirmtoken(msg);
       else if (cmd == "reset") {
         if (!firstMsg) ESP.reset();
       }
