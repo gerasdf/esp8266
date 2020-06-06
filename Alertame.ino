@@ -268,7 +268,7 @@ void cmd_help(String &chat_id) {
 
 void cmd_reset(telegramMessage &msg) {
   clean_last_message();
-  send_message(msg.chat_id, F("I'll be back"));
+  send_message(msg.chat_id, String(F("I'll be back")));
   EPS.reset();
 }
 
