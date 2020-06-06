@@ -268,7 +268,7 @@ void cmd_help(String &chat_id) {
 
 void cmd_reset(telegramMessage &msg) {
   String answer = F("I'll be back");
-  
+
   clean_last_message();
   send_message(msg.chat_id, answer);
   ESP.reset();
@@ -409,17 +409,20 @@ void cmd_confirmtoken(telegramMessage &msg) {
     config.save();
     cmd_start(msg.chat_id);
     answer_msg = F("New Bot token confirmed");
+    if (msg.query_id) {
+      bot.answerCallbackQuery(msg.query_id, answer_msg);
+    }
   } else if (new_token == config.token) {
     answer_msg = F("New Bot token rejected");
+    if (msg.query_id) {
+      bot.answerCallbackQuery(msg.query_id, answer_msg);
+    }
+    clean_last_message();
     bot.updateToken(config.token);
     send_message(msg.chat_id, String(F("New Bot token was rejected by ")) + msg.from_name);
   } else {
-    answer_msg = F("Invalid /confirmtoken msg");
-  } 
-  
-  if (msg.query_id) {
-    bot.answerCallbackQuery(msg.query_id, answer_msg);
-  }
+    // invalid token, ignore
+  }   
 }
 
 void cmd_relay_set(telegramMessage &msg, int first_state, int second_state) {
