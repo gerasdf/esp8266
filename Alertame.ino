@@ -407,11 +407,11 @@ void cmd_confirmtoken(telegramMessage &msg) {
   if (new_token == bot.getToken()) {
     config.token = new_token;
     config.save();
-    cmd_start(msg.chat_id);
-    answer_msg = F("New Bot token confirmed");
     if (msg.query_id) {
       bot.answerCallbackQuery(msg.query_id, answer_msg);
     }
+    cmd_start(msg.chat_id);
+    answer_msg = F("New Bot token confirmed");
   } else if (new_token == config.token) {
     answer_msg = F("New Bot token rejected");
     if (msg.query_id) {
