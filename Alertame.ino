@@ -266,6 +266,12 @@ void cmd_help(String &chat_id) {
   send_message(chat_id, help);
 }
 
+void cmd_reset(telegramMessage &msg) {
+  clean_last_message();
+  send_message(msg.chat_id, F("I'll be back"));
+  EPS.reset();
+}
+
 void cmd_status(String &chat_id) {
   String in_st  = input_status?"Ok":"ALARMA!";
   String rel_st = relay_state?"On":"Off";
@@ -509,13 +515,11 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == "roffon") cmd_relay_set(msg, 0, 1);
       else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
       else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
+      else if (cmd == "reset") cmd_reset(msg);
       else if (cmd.startsWith(F("setname "))) cmd_setname(msg);
       else if (cmd.startsWith(F("setowner "))) cmd_setowner(msg);
       else if (cmd.startsWith(F("settoken "))) cmd_settoken(msg);
       else if (cmd.startsWith(F("confirmtoken "))) cmd_confirmtoken(msg);
-      else if (cmd == "reset") {
-        if (!firstMsg) ESP.reset();
-      }
       else if (bot.messages[i].hasDocument) cmd_sent_file(i);
       else cmd_help(msg.chat_id);
     } else {
