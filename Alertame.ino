@@ -267,9 +267,11 @@ void cmd_help(String &chat_id) {
 }
 
 void cmd_reset(telegramMessage &msg) {
+  String answer = F("I'll be back");
+  
   clean_last_message();
-  send_message(msg.chat_id, String(F("I'll be back")));
-  EPS.reset();
+  send_message(msg.chat_id, answer);
+  ESP.reset();
 }
 
 void cmd_status(String &chat_id) {
