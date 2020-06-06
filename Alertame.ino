@@ -226,16 +226,21 @@ bool Bot_greeted = false;
 
 // General
 
-void send_message(String &chat_id, String &text) {
+void send_message_and_answer(const String &chat_id, const String &query_id, const String &text) {
   String msg = F("*");
   msg += config.name;
   msg += "*: ";
-  
-  if (chat_id == "") chat_id = config.owner_id;
-  
+    
   msg += text;
   debug_log(msg);
-  bot.sendMessage(chat_id, msg, "Markdown");
+
+  if (chat_id) bot.sendMessage(chat_id, msg, "Markdown");
+  if (query_id) bot.answerCallbackQuery(query_id, msg);
+}
+
+void send_message(String &chat_id, const String &text) {
+  if (chat_id == "") chat_id = config.owner_id;
+  send_message_and_answer(chat_id, F(""), text);
 }
 
 void clean_last_message() {
