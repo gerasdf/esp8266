@@ -379,11 +379,9 @@ void cmd_settoken(telegramMessage &msg) {
   );
   String answer = F("*");
   answer += config.name;
-  answer += F("*: User ");
-  answer += msg.chat_id;
-  answer += F(" (");
+  answer += F("*: ");
   answer += msg.from_name;
-  answer += F(") is asking to connect the device to this Bot");
+  answer += F(" is asking to connect the device to this Bot");
 
   bot.sendMessageWithInlineKeyboard(config.owner_id, answer, "Markdown", keyboard); //, false, true, false);
   // save old token and start timeout to revert token
