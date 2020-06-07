@@ -19,6 +19,8 @@
 AutoConnect portal;
 #endif
 
+// Version bump for new TelegramBot library with bugfix
+
 int OTA_delay = 0;
 
 // All Configuration options
