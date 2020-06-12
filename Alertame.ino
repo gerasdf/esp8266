@@ -502,19 +502,19 @@ void Bot_handleNewMessages(int numNewMessages) {
     }
     // Device commands (only acceptable if directed to a particular device and from the owner)
     else if (is_for_me(msg) && is_from_owner(msg)) {
-      if      (cmd == "status") cmd_status(msg.chat_id);
-      else if (cmd == "polarity") cmd_polarity(msg);
-      else if (cmd == "ron") cmd_relay_set(msg, 1, -1);
-      else if (cmd == "roff") cmd_relay_set(msg, 0, -1);
-      else if (cmd == "ronoff") cmd_relay_set(msg, 1, 0);
-      else if (cmd == "roffon") cmd_relay_set(msg, 0, 1);
-      else if (cmd == "sysinfo") cmd_sysinfo(msg.chat_id);
-      else if (cmd == "keyboard") cmd_keyboard(msg.chat_id);
-      else if (cmd == "reset") cmd_reset(msg);
-      else if (cmd.startsWith(F("setname "))) cmd_setname(msg);
-      else if (cmd.startsWith(F("setowner "))) cmd_setowner(msg);
-      else if (cmd.startsWith(F("settoken "))) cmd_settoken(msg);
-      else if (cmd.startsWith(F("confirmtoken "))) cmd_confirmtoken(msg);
+      if      (cmd == F("status")) cmd_status(msg.chat_id);
+      else if (cmd == F("polarity")) cmd_polarity(msg);
+      else if (cmd == F("ron")) cmd_relay_set(msg, 1, -1);
+      else if (cmd == F("roff")) cmd_relay_set(msg, 0, -1);
+      else if (cmd == F("ronoff")) cmd_relay_set(msg, 1, 0);
+      else if (cmd == F("roffon")) cmd_relay_set(msg, 0, 1);
+      else if (cmd == F("sysinfo")) cmd_sysinfo(msg.chat_id);
+      else if (cmd == F("keyboard")) cmd_keyboard(msg.chat_id);
+      else if (cmd == F("reset")) cmd_reset(msg);
+      else if (cmd == F("setname")) cmd_setname(msg);
+      else if (cmd == F("setowner")) cmd_setowner(msg);
+      else if (cmd == F("settoken ")) cmd_settoken(msg);
+      else if (cmd == F("confirmtoken ")) cmd_confirmtoken(msg);
       else if (bot.messages[i].hasDocument) cmd_sent_file(i);
       else cmd_help(msg.chat_id);
     } else {
