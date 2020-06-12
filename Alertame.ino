@@ -19,14 +19,17 @@
 AutoConnect portal;
 #endif
 
-// Version bump for new TelegramBot library with bugfix
-
 int OTA_delay = 0;
 
 // All Configuration options
 
 #define MY_NAME            "ToI "
 #define TELEGRAM_BOT_TOKEN "648272766:AAEkW5FaFMeHqWwuNBsZJckFEOdhlSVisEc"
+
+// int digitalInputPin = 12;  // GPIO12 - NodemCU D6
+int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
+int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
+// int digitalOutputPin = 13; // GPIO1 - Rotito - relay control
 
 #ifdef ALERT_DEBUG
 #define DPRINTLN(X)  debug_log(X);
@@ -90,10 +93,6 @@ public:
     }
   }
 } config;
-
-// int digitalInputPin = 12;  // GPIO12 - NodemCU D6
-int digitalInputPin = 5;  // GPIO5 - Relay module - optocoupled input
-int digitalOutputPin = 4; // GPIO4 - Relay module - relay control
 
 #ifndef AUTOCONNECT
 char WiFi_ssid[] = "Your Fixed ESSID";
