@@ -264,7 +264,7 @@ void cmd_start(String &chat_id) {
 }
 
 void cmd_help(String &chat_id) {
-  String help = F(" See commands help when pressing the `/` button");
+  String help = F("See commands help when pressing the `/` button");
 
   send_message(chat_id, help);
 }
