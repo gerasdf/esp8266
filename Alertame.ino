@@ -531,7 +531,7 @@ void Bot_setup() {
 }
 
 void Bot_first_time() {
-  String commands = F("["
+  const String commands = F("["
     "{\"command\":\"allstatus\",\"description\":\"answer all devices current status\"},"
     "{\"command\":\"allsysinfo\",\"description\":\"answer all devices system info\"},"
     "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
