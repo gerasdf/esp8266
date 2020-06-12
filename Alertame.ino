@@ -579,8 +579,22 @@ void Bot_loop() {
 
 ///////////////////////
 
+#define HIGH true
+#define LOW  false
+
 bool input_read() {
-  return digitalRead(digitalInputPin) ^ config.polarity_inverted;
+  // compatible with 50 Hz signals
+  unsigned long start = millis();
+  bool input = HIGH;  // Assuming PULLUP and HIGH default INPUT state
+
+  do {
+    bool in = digitalRead(digitalInputPin); 
+    input &= in;
+    // Serial.print(in ? "+":"-");
+    delay(1);
+  } while (millis() - start < 50); // 50 ms
+
+  return input ^ config.polarity_inverted;
 }
 
 void input_setup() {
