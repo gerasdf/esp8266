@@ -479,8 +479,13 @@ void Bot_handleNewMessages(int numNewMessages) {
     cmd.toLowerCase();
     if (cmd[0] == '/') cmd.remove(0,1);
 
-    int first_at = cmd.indexOf('@');
-    if (first_at >= 0) cmd.remove(first_at);
+    int delimiter;
+    
+    delimiter = cmd.indexOf('@');
+    if (delimiter >= 0) cmd.remove(delimiter);
+
+    delimiter = cmd.indexOf(' ');
+    if (delimiter >= 0) cmd.remove(delimiter);
 
     debug_log(String(F("Received \"")) + msg.text + F("\" from ") + msg.chat_id);
 
@@ -513,8 +518,8 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == F("reset")) cmd_reset(msg);
       else if (cmd == F("setname")) cmd_setname(msg);
       else if (cmd == F("setowner")) cmd_setowner(msg);
-      else if (cmd == F("settoken ")) cmd_settoken(msg);
-      else if (cmd == F("confirmtoken ")) cmd_confirmtoken(msg);
+      else if (cmd == F("settoken")) cmd_settoken(msg);
+      else if (cmd == F("confirmtoken")) cmd_confirmtoken(msg);
       else if (bot.messages[i].hasDocument) cmd_sent_file(i);
       else cmd_help(msg.chat_id);
     } else {
