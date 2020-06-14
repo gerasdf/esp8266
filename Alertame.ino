@@ -465,14 +465,20 @@ void cmd_own(telegramMessage &msg) {
 }
 
 void cmd_wificlear(telegramMessage &msg) {
+  String answer = F("Cleared ");
   AutoConnectCredential credential;
   station_config_t config;
   uint8_t ent = credential.entries();
 
+  answer += ent;
+  answer += F(" credentials");
   while (ent--) {
     credential.load((int8_t)0, &config);
+    answer += F(", ");
+    answer += String((char*)config.ssid);
     credential.del((const char*)&config.ssid[0]);
   }
+  send_message(msg.chat_id, answer);
 }
 
 void delay_next_poll() {
