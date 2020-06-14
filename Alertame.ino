@@ -464,6 +464,17 @@ void cmd_own(telegramMessage &msg) {
   bot.sendMessageWithInlineKeyboard(config.owner_id, answer, "Markdown", keyboard); //, false, true, false);
 }
 
+void cmd_wificlear(telegramMessage &msg) {
+  AutoConnectCredential credential;
+  station_config_t config;
+  uint8_t ent = credential.entries();
+
+  while (ent--) {
+    credential.load((int8_t)0, &config);
+    credential.del((const char*)&config.ssid[0]);
+  }
+}
+
 void delay_next_poll() {
   Bot_nexttime += Bot_mtbs_ms;
 }
@@ -520,6 +531,7 @@ void Bot_handleNewMessages(int numNewMessages) {
       else if (cmd == F("setowner")) cmd_setowner(msg);
       else if (cmd == F("settoken")) cmd_settoken(msg);
       else if (cmd == F("confirmtoken")) cmd_confirmtoken(msg);
+      else if (cmd == F("wificlear")) cmd_wificlear(msg);
       else if (bot.messages[i].hasDocument) cmd_sent_file(i);
       else cmd_help(msg.chat_id);
     } else {
@@ -556,7 +568,8 @@ void Bot_first_time() {
     "{\"command\":\"settoken\",\"description\":\"changes device's bot token. *dangerous*\"},"
     "{\"command\":\"start\", \"description\":\"register with (all) devices as their user\"},"
     "{\"command\":\"status\",\"description\":\"answer device current status\"},"
-    "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"}"
+    "{\"command\":\"sysinfo\",\"description\":\"answer device system info\"},"
+    "{\"command\":\"wificlear\",\"description\":\"clear all saved WiFi networks\"}"
   "]");
 
   bot.setMyCommands(commands);
