@@ -135,10 +135,10 @@ void WiFi_setup() {
   portal.config(portalConfig);
   do {
     if (portal.begin()) {
-      Serial.println("connected:" + WiFi.SSID());
+      DPRINTLN("connected:" + WiFi.SSID());
       Serial.println("IP:" + WiFi.localIP().toString());
     } else {
-      Serial.println(F("connection failed. Trying again"));
+      DPRINTLN(F("connection failed. Trying again"));
     }
   } while (WiFi.status() != WL_CONNECTED);
 #else // not AUTOCONNECT
@@ -202,7 +202,7 @@ void cmd_unblink() {
 
 void blink_setup() {
   cmd_unblink();
-  Serial.println("I'm " + config.name);
+  DPRINTLN("I'm " + config.name);
 }
 
 void blink_loop() {
