@@ -132,6 +132,7 @@ void WiFi_setup() {
   portalConfig.ota = AC_OTA_BUILTIN;
   portalConfig.autoReconnect = true;
   portalConfig.portalTimeout = 2*60*1000; // ms
+  portalConfig.principle = AC_PRINCIPLE_RSSI;
   portal.config(portalConfig);
   do {
     if (portal.begin()) {
