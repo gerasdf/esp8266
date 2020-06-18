@@ -396,9 +396,10 @@ void cmd_settoken(telegramMessage &msg) {
   confirmToken_timeout = millis() + 1000*CONFIRM_TOKEN_TIMEOUT_TIME_S;
 }
 
-void reject_token() {
+void reject_token(const String chat_id, const String msg) {
     bot.updateToken(config.token);
     confirmToken_timeout = 0;
+    send_message(chat_id, msg);
 }
 
 void cmd_confirmtoken(telegramMessage &msg) {
@@ -418,7 +419,7 @@ void cmd_confirmtoken(telegramMessage &msg) {
   } else if (new_token == config.token) {
     send_message_or_answer(msg.chat_id, msg.query_id, F("New Bot token rejected"));
     clean_last_message();
-    reject_token();
+    reject_token(msg.chat_id, F("New Bot token rejected"));
   } else {
     // invalid token, ignore
   }   
@@ -600,8 +601,7 @@ void Bot_loop() {
   }
   if (millis() > Bot_nexttime)  {
     if (confirmToken_timeout && (millis() > confirmToken_timeout)) {
-      reject_token();
-      send_message(config.owner_id, String(F("New Bot token request timedout")));
+      reject_token(config.owner_id, String(F("New Bot token request timedout")));
     }
 
     Bot_nexttime = millis() + Bot_mtbs_ms;
