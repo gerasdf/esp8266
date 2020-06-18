@@ -367,6 +367,9 @@ void cmd_setowner(telegramMessage &msg) {
   cmd_start(config.owner_id);
 }
 
+#define CONFIRM_TOKEN_TIMEOUT_TIME_S    90
+unsigned long confirmToken_timeout = 0;
+
 void cmd_settoken(telegramMessage &msg) {
   int first_space = msg.text.indexOf(' ');
 
@@ -391,6 +394,13 @@ void cmd_settoken(telegramMessage &msg) {
 
   bot.sendMessageWithInlineKeyboard(config.owner_id, answer, "Markdown", keyboard); //, false, true, false);
   // save old token and start timeout to revert token
+  confirmToken_timeout = millis() + 1000*CONFIRM_TOKEN_TIMEOUT_TIME_S;
+}
+
+void reject_token(String chat_id = "") {
+    bot.updateToken(config.token);
+    send_message(chat_id, String(F("New Bot token request timedout")));
+    confirmToken_timeout = 0;
 }
 
 void cmd_confirmtoken(telegramMessage &msg) {
@@ -406,11 +416,11 @@ void cmd_confirmtoken(telegramMessage &msg) {
     config.save();
     send_message_or_answer(msg.chat_id, msg.query_id, F("New Bot token confirmed"));
     cmd_status(msg.chat_id);
+    confirmToken_timeout = 0;
   } else if (new_token == config.token) {
     send_message_or_answer(msg.chat_id, msg.query_id, F("New Bot token rejected"));
     clean_last_message();
-    bot.updateToken(config.token);
-    send_message(msg.chat_id, String(F("New Bot token was rejected by ")) + msg.from_name);
+    reject_token(msg.chat_id);
   } else {
     // invalid token, ignore
   }   
@@ -591,6 +601,9 @@ void Bot_loop() {
     Bot_first_time();
   }
   if (millis() > Bot_nexttime)  {
+    if (confirmToken_timeout && (millis() > confirmToken_timeout))
+      reject_token();
+
     Bot_nexttime = millis() + Bot_mtbs_ms;
 
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
