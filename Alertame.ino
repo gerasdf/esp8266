@@ -103,7 +103,7 @@ char WiFi_key[] = "Your Password";
 //////////////////
 
 void relay_set(int value);
-void cmd_status(String &chat_id);
+void cmd_status(const String &chat_id);
 void Bot_first_time();
 
 bool input_status;
@@ -237,8 +237,7 @@ void send_message_or_answer(const String &chat_id, const String &query_id, const
   }
 }
 
-void send_message(String &chat_id, const String &text) {
-  if (chat_id == "") chat_id = config.owner_id;
+void send_message(const String &chat_id, const String &text) {
   send_message_or_answer(chat_id, F(""), text);
 }
 
@@ -255,7 +254,7 @@ bool is_for_me(telegramMessage &msg) {
 }
 
 // Greeter
-void cmd_start(String &chat_id) {
+void cmd_start(const String &chat_id) {
   String welcome = F("Hola, your `chat_id` is ");
   welcome += chat_id;
 
@@ -264,7 +263,7 @@ void cmd_start(String &chat_id) {
   cmd_status(chat_id);
 }
 
-void cmd_help(String &chat_id) {
+void cmd_help(const String &chat_id) {
   String help = F("See commands help when pressing the `/` button");
 
   send_message(chat_id, help);
@@ -278,7 +277,7 @@ void cmd_reset(telegramMessage &msg) {
   ESP.reset();
 }
 
-void cmd_status(String &chat_id) {
+void cmd_status(const String &chat_id) {
   String in_st  = input_status?"Ok":"ALARMA!";
   String rel_st = relay_state?"On":"Off";
   String pol = config.polarity_inverted?"-":"+";
@@ -294,7 +293,7 @@ void cmd_status(String &chat_id) {
   send_message(chat_id, msg);
 }
 
-void cmd_sysinfo(String &chat_id) {
+void cmd_sysinfo(const String &chat_id) {
   String msg = F("\nIP: *");    msg += WiFi.localIP().toString();
   msg += F("*\nChipID: *");     msg += String(ESP.getChipId(), HEX);
   msg += F("*\nESSID: *");      msg += WiFi.SSID();
