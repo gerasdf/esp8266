@@ -302,6 +302,7 @@ void cmd_sysinfo(const String &chat_id) {
   msg += F(" dBm*\nRAM: *");    msg += ESP.getFreeHeap();
   msg += F("*\nuptime: *");     msg += millis()/1000;
   msg += F("*\nowner: *");      msg += config.owner_id;
+  msg += F("*\ntoken: *");      msg += config.token.substring(0,8);
   msg += F("*\nversion: *" GIT_VERSION "*");
   // msg += F("*");
   
